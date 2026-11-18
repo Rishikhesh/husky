@@ -83,6 +83,17 @@ final class RewriteSettings: ObservableObject {
         }
     }
 
+    /// after each dictation, the provider fixes what was likely misheard
+    /// using the text around your cursor, and rewrites see that text too.
+    /// off by default: it sends that text along, unless the provider is
+    /// apple's on-device model.
+    @Published var usesCursorContext: Bool {
+        didSet {
+            guard usesCursorContext != oldValue else { return }
+            userDefaults.set(usesCursorContext, forKey: Self.cursorContextKey)
+        }
+    }
+
     private let userDefaults: UserDefaults
 
     private static let enabledKey = "AndrewDictate.rewrite.enabled"
@@ -93,6 +104,7 @@ final class RewriteSettings: ObservableObject {
     private static let modifierKey = "AndrewDictate.rewrite.modifier"
     private static let summariesKey = "AndrewDictate.ai.summaries"
     private static let templateKey = "AndrewDictate.ai.template"
+    private static let cursorContextKey = "AndrewDictate.ai.cursorContext"
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
@@ -116,6 +128,7 @@ final class RewriteSettings: ObservableObject {
         summariesEnabled = userDefaults.object(forKey: Self.summariesKey) as? Bool ?? true
         defaultTemplateID = userDefaults.string(forKey: Self.templateKey)
             ?? MeetingTemplate.auto.id
+        usesCursorContext = userDefaults.bool(forKey: Self.cursorContextKey)
     }
 
     func model(for provider: RewriteProvider) -> String {

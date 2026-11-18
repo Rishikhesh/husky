@@ -172,6 +172,10 @@ final class DictationCoordinator: ObservableObject {
     /// how loud the meeting is, for the meter alone: kept off this object
     /// so fifteen changes a second do not redraw everything that watches it.
     let meetingLevels = MeetingLevelsFeed()
+    /// the text around the cursor as this take started, read only while
+    /// the ai tab's "fix mistakes using what's around your cursor" is on.
+    /// dropped when the take ends.
+    private var cursorContext: Task<CursorContext?, Never>?
     private lazy var rewriteController: RewriteController = {
         let controller = RewriteController(
             settings: rewriteSettings
@@ -539,6 +543,7 @@ final class DictationCoordinator: ObservableObject {
         wireMachine()
         wirePillQuestions()
         wireRewrite()
+        wireCursorContext()
         installSystemLifecycleObservers()
         wireMeetings()
         // a summary or a title written is a meeting changed on disk.
@@ -2235,6 +2240,7 @@ extension DictationCoordinator {
         switch event {
         case let .state(state, fastDismiss):
             apply(state, fastHUDDismiss: fastDismiss)
+            followCursorContext(state)
             if suspendsCaptureAfterTheUtterance, state != .recording {
                 suspendsCaptureAfterTheUtterance = false
                 captureSlot.suspend()
@@ -3270,7 +3276,10 @@ extension DictationCoordinator {
                 }
                 self.machine.rewrite = { @MainActor [weak self] text in
                     guard let self else { return .asSaid }
-                    return await self.rewriteController.run(text)
+                    return await self.rewriteController.run(
+                        text,
+                        context: await self.cursorContext?.value
+                    )
                 }
             }
             .store(in: &settingsCancellables)
@@ -3285,5 +3294,66 @@ extension DictationCoordinator {
     private func showRewritePill(_ pill: HUDRewritePill?) {
         hudViewModel.showRewrite(pill)
         synchronizeHUD()
+    }
+}
+
+// MARK: - the text around the cursor
+
+extension DictationCoordinator {
+    /// read when a take starts, so it is the text the words will land in,
+    /// and off the key's path: the read is AX to another app and nothing
+    /// waits on it until the words exist.
+    private func followCursorContext(_ state: UtteranceMachine.State) {
+        switch state {
+        case .recording where rewriteSettings.usesCursorContext:
+            cursorContext = Task { await CursorContext.read() }
+        case .idle:
+            cursorContext = nil
+        default:
+            break
+        }
+    }
+
+    /// the fix-up runs on every take that is not a rewrite (the rewrite
+    /// already asks a model, and is handed the same context). no context,
+    /// no provider, or no good answer in time: the words go out as the
+    /// cleaner left them.
+    private func wireCursorContext() {
+        rewriteSettings.$usesCursorContext
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] enabled in
+                guard let self else { return }
+                guard enabled else {
+                    self.machine.fixUp = nil
+                    self.cursorContext = nil
+                    return
+                }
+                self.machine.fixUp = { @MainActor [weak self] text in
+                    await self?.fixUp(text) ?? text
+                }
+            }
+            .store(in: &settingsCancellables)
+    }
+
+    private func fixUp(_ text: String) async -> String {
+        guard let context = await cursorContext?.value else {
+            return text
+        }
+        let provider = rewriteSettings.provider
+        guard case let .success(connection) = await rewriteAccounts.connect(
+            provider,
+            model: rewriteSettings.model(for: provider)
+        ) else {
+            return text
+        }
+        return await ContextFixUp.run(
+            text,
+            context: context,
+            preferredWords: dictionaryStore.entries.map(\.right),
+            client: connection.client,
+            model: connection.model,
+            deadline: ContextFixUp.deadline(for: provider)
+        )
     }
 }

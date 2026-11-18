@@ -141,6 +141,11 @@ final class UtteranceMachine {
     /// cleaner and the paste: the picker, then the model. nil while the
     /// feature is off, and then the modifier means nothing.
     var rewrite: (@MainActor (String) async -> RewriteOutcome)?
+    /// every other take's cleaned words come here on the way to the paste:
+    /// the fix-up that uses the text around the cursor. it hands back
+    /// words to paste, the same ones when it has nothing better. nil while
+    /// "fix mistakes using what's around your cursor" is off.
+    var fixUp: (@MainActor (String) async -> String)?
 
     /// One cleaner, kept. Its nineteen regexes — plus one per taught word —
     /// compile on construction, and that used to happen on the main actor
@@ -319,7 +324,12 @@ final class UtteranceMachine {
         // network, and neither is a hung engine. esc drops it.
         if state == .transcribing,
            rewritingGeneration == pipelineGeneration {
-            flashNotice("still rewriting the last one", duration: 1.4)
+            flashNotice(
+                wantsRewrite
+                    ? "still rewriting the last one"
+                    : "still finishing the last one",
+                duration: 1.4
+            )
             refuse(.stillFinishing)
             return
         }
@@ -1430,6 +1440,19 @@ final class UtteranceMachine {
                     press?.rewriteStyle = style
                     rewriteFailure = reason
                 }
+            } else if !copiesInsteadOfPasting, !intoOurOwnUI, let fixUp {
+                // a press meanwhile is refused like one during a rewrite:
+                // it is a network, not a hung engine.
+                rewritingGeneration = generation
+                let fixed = await fixUp(cleanedTranscript)
+                if rewritingGeneration == generation {
+                    rewritingGeneration = nil
+                }
+                try Task.checkCancellation()
+                guard generation == pipelineGeneration else {
+                    return
+                }
+                inserted = fixed
             }
 
             // a second dictation into the same field must not weld itself
