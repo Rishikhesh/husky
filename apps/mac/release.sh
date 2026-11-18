@@ -57,7 +57,10 @@ STAGE="$(mktemp -d)"
 cp -R "$APP" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
 rm -f "$DMG"
-hdiutil create -volname "Husky" -srcfolder "$STAGE" -ov -format UDZO "$DMG" -quiet
+# hdiutil now and then fails once for no lasting reason (a busy image):
+# one retry after a pause, then give up for real.
+hdiutil create -volname "Husky" -srcfolder "$STAGE" -ov -format UDZO "$DMG" -quiet \
+  || { sleep 3; hdiutil create -volname "Husky" -srcfolder "$STAGE" -ov -format UDZO "$DMG" -quiet; }
 rm -rf "$STAGE"
 SHA="$(shasum -a 256 "$DMG" | awk '{print $1}')"
 
