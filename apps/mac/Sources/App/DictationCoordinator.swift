@@ -518,14 +518,18 @@ final class DictationCoordinator: ObservableObject {
         // CombineLatest seeds itself from both current values here, and the
         // closure must use what it is handed: a @Published sink fires on
         // willSet, so reading the store would hand back the old array.
-        Publishers.CombineLatest(
+        Publishers.CombineLatest4(
             dictionaryStore.$entries,
-            settings.$cleanupEnabled
+            settings.$cleanupEnabled,
+            settings.$fuzzyDictionaryEnabled,
+            settings.$removeFillersEnabled
         )
-        .sink { [weak self] entries, fullCleanup in
+        .sink { [weak self] entries, fullCleanup, fuzzy, fillers in
             self?.machine.cleaner = DeterministicCleaner(
                 entries: entries,
-                fullCleanup: fullCleanup
+                fullCleanup: fullCleanup,
+                fuzzyMatching: fuzzy,
+                removeFillers: fillers
             )
             // a learned row removed from the dictionary tab has nothing
             // left for the menu to undo.

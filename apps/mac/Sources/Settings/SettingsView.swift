@@ -305,6 +305,12 @@ struct SettingsView: View {
             Section("Cleanup") {
                 PipelineView(coordinator: coordinator, settings: settings)
                     .padding(.vertical, 4)
+                SettingsToggleRow(
+                    "Remove ums and uhs",
+                    explanation: "Takes out um, uh, erm and hmm, and the comma they leave. Never “like” or “you know”. Only while cleanup is on.",
+                    isOn: $settings.removeFillersEnabled
+                )
+                .disabled(!settings.cleanupEnabled)
             }
 
             Section {
@@ -430,6 +436,14 @@ struct SettingsView: View {
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            SettingsToggleRow(
+                "Match close misspellings of your words",
+                explanation: "“Versel” becomes “Vercel” when Vercel is on the right. Everyday words are never changed. This applies even with cleanup off.",
+                isOn: $settings.fuzzyDictionaryEnabled
+            )
+            .padding(12)
+            .glassModule(cornerRadius: 10)
 
             DictionaryEditor(
                 store: dictionaryStore,
