@@ -84,13 +84,14 @@ gh release create "v${VERSION}" "$DMG" --repo "$REPO" --title "Husky ${VERSION}"
 rm -f "$NOTES" "$DMG"
 
 echo "▸ homebrew cask"
-TAP="$(mktemp -d)"
-gh repo clone "$TAP_REPO" "$TAP" -- -q
+# a clone under ~/personal, so its commits sign with the personal key.
+TAP="$HOME/personal/homebrew-tap"
+[ -d "$TAP/.git" ] || gh repo clone "$TAP_REPO" "$TAP" -- -q
+git -C "$TAP" "${GIT_AUTH[@]}" pull -q --ff-only
 sed -i '' "s/version \".*\"/version \"${VERSION}\"/; s/sha256 \".*\"/sha256 \"${SHA}\"/" "$TAP/Casks/husky.rb"
 git -C "$TAP" add Casks/husky.rb
 git -C "$TAP" commit -q -m "husky ${VERSION}"
 git -C "$TAP" "${GIT_AUTH[@]}" push -q origin HEAD
-rm -rf "$TAP"
 
 echo
 echo "released Husky ${VERSION}: https://github.com/${REPO}/releases/tag/v${VERSION}"
