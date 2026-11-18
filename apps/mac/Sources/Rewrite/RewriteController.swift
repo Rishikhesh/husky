@@ -121,7 +121,7 @@ final class RewriteController {
     }
 
     /// the machine's `rewrite`: the cleaned words in, what to paste out.
-    func run(_ text: String) async -> RewriteOutcome {
+    func run(_ text: String, context: CursorContext? = nil) async -> RewriteOutcome {
         let offersPicker = pointerAskedForPicker
         stopWatchingPointer()
         pointerTravel = 0
@@ -142,7 +142,7 @@ final class RewriteController {
         )
         var asked = (
             style: pick.startingStyle,
-            answer: ask(connection, text, pick.startingStyle)
+            answer: ask(connection, text, pick.startingStyle, context)
         )
 
         var style = pick.startingStyle
@@ -156,7 +156,7 @@ final class RewriteController {
             }
             if style.id != asked.style.id {
                 asked.answer.cancel()
-                asked = (style, ask(connection, text, style))
+                asked = (style, ask(connection, text, style, context))
             }
         }
         showPill?(.working("rewriting · \(style.name)…"))
@@ -277,9 +277,14 @@ final class RewriteController {
     private func ask(
         _ connection: RewriteConnection,
         _ text: String,
-        _ style: RewriteStyle
+        _ style: RewriteStyle,
+        _ context: CursorContext?
     ) -> Task<String, any Error> {
-        let prompt = RewriteInstructions.prompt(for: text, style: style)
+        let prompt = RewriteInstructions.prompt(
+            for: text,
+            style: style,
+            context: context
+        )
         let client = connection.client
         let model = connection.model
         return Task.detached(priority: .userInitiated) {
