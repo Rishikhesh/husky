@@ -733,7 +733,7 @@ struct OnboardingView: View {
         switch coordinator.settings.meetingModel {
         case .whisperLargeV3: "Got it. It hears every language and writes English."
         case .whisperLargeV3Turbo: "Got it. It hears every language and writes it as spoken."
-        case .parakeetV3: "Got it. It hears English and European languages, as spoken."
+        case .parakeetUltra, .parakeetV3: "Got it. It hears English and European languages, as spoken."
         case .parakeetV2: "Got it. It hears English, as spoken."
         case .whistle: "Got it. It hears English and six European languages, as spoken."
         }

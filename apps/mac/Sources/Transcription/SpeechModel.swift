@@ -17,6 +17,10 @@ import Foundation
 /// Hindi included, comes out as confident nonsense, so neither is ever the
 /// meeting default.
 ///
+/// Parakeet ultra is moondream's post-training of v3 (FluidAudio 0.17.3):
+/// the same 25 languages and speed, a lower error rate in every one of
+/// them, for a download a third bigger.
+///
 /// Whistle is Cactus Compute's, released 2026-10-02: 17 mb, on the cpu, in
 /// English and six European languages. New enough that its card says so.
 ///
@@ -25,6 +29,7 @@ import Foundation
 enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
     case whisperLargeV3
     case whisperLargeV3Turbo
+    case parakeetUltra
     case parakeetV3
     case parakeetV2
     case whistle
@@ -50,7 +55,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
     /// also the order `record with ▸` lists them in.
     static func cards(for job: Job) -> [SpeechModel] {
         switch job {
-        case .dictation: [.parakeetV2, .parakeetV3, .whisperLargeV3Turbo, .whisperLargeV3, .whistle]
+        case .dictation: [.parakeetV2, .parakeetUltra, .parakeetV3, .whisperLargeV3Turbo, .whisperLargeV3, .whistle]
         case .meetings: allCases
         }
     }
@@ -71,7 +76,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
 
     var family: Family {
         switch self {
-        case .parakeetV2, .parakeetV3: .parakeet
+        case .parakeetV2, .parakeetV3, .parakeetUltra: .parakeet
         case .whisperLargeV3, .whisperLargeV3Turbo: .whisper
         case .whistle: .whistle
         }
@@ -81,6 +86,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
         switch self {
         case .whisperLargeV3: "whisper large"
         case .whisperLargeV3Turbo: "whisper turbo"
+        case .parakeetUltra: "parakeet ultra"
         case .parakeetV3: "parakeet v3"
         case .parakeetV2: "parakeet v2"
         case .whistle: "whistle"
@@ -92,7 +98,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
     var badge: String? {
         switch self {
         case .whistle: "experimental"
-        case .whisperLargeV3, .whisperLargeV3Turbo, .parakeetV3, .parakeetV2: nil
+        case .whisperLargeV3, .whisperLargeV3Turbo, .parakeetUltra, .parakeetV3, .parakeetV2: nil
         }
     }
 
@@ -102,6 +108,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
         switch self {
         case .whisperLargeV3: "whisper large-v3"
         case .whisperLargeV3Turbo: "whisper large-v3 turbo"
+        case .parakeetUltra: "parakeet ultra (multilingual)"
         case .parakeetV3: "parakeet v3 (multilingual)"
         case .parakeetV2: "parakeet v2 (english)"
         case .whistle: "whistle (cactus compute)"
@@ -114,11 +121,13 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
     func trait(for job: Job) -> String {
         switch (job, self) {
         case (.dictation, .parakeetV2): "english · fastest"
+        case (.dictation, .parakeetUltra): "25 languages · more accurate than v3, as fast"
         case (.dictation, .parakeetV3): "25 languages · a touch slower"
         case (.dictation, .whisperLargeV3Turbo): "every language · slower than parakeet"
         case (.dictation, .whisperLargeV3): "every language · slowest, you'll wait for it"
         case (.meetings, .whisperLargeV3): "every language, in english"
         case (.meetings, .whisperLargeV3Turbo): "every language, as spoken · faster"
+        case (.meetings, .parakeetUltra): "fast · fewer mistakes than v3 · english and european languages only · anything else comes out as nonsense"
         case (.meetings, .parakeetV3): "fast · english and european languages only · anything else comes out as nonsense"
         case (.meetings, .parakeetV2): "fastest · english only · anything else comes out as nonsense"
         case (.dictation, .whistle): "english and 6 european languages · a tiny download"
@@ -132,7 +141,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
     /// own length again; turbo, half that.
     var dictationPace: TranscriptionDeadline.Pace {
         switch self {
-        case .parakeetV2, .parakeetV3, .whistle: .parakeet
+        case .parakeetV2, .parakeetV3, .parakeetUltra, .whistle: .parakeet
         case .whisperLargeV3Turbo: .init(floor: .seconds(10), perSecondOfAudio: 0.5)
         case .whisperLargeV3: .init(floor: .seconds(20), perSecondOfAudio: 1)
         }
@@ -144,6 +153,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
         switch self {
         case .whisperLargeV3: "~2.9 gb"
         case .whisperLargeV3Turbo: "~1.5 gb"
+        case .parakeetUltra: "~630 mb"
         case .parakeetV3: "~470 mb"
         case .parakeetV2: "~460 mb"
         case .whistle: "~17 mb"
@@ -156,7 +166,7 @@ enum SpeechModel: String, CaseIterable, Codable, Identifiable, Sendable {
         switch self {
         case .whisperLargeV3: "openai_whisper-large-v3"
         case .whisperLargeV3Turbo: "openai_whisper-large-v3-v20240930_turbo"
-        case .parakeetV3, .parakeetV2, .whistle: nil
+        case .parakeetUltra, .parakeetV3, .parakeetV2, .whistle: nil
         }
     }
 

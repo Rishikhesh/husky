@@ -332,6 +332,7 @@ extension SpeechModel {
         switch self {
         case .parakeetV2: .v2
         case .parakeetV3: .v3
+        case .parakeetUltra: .ultra
         case .whisperLargeV3, .whisperLargeV3Turbo, .whistle: nil
         }
     }

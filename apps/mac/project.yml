@@ -13,8 +13,10 @@ packages:
     # resolve whatever was newest that morning. 0.15.6 arrived unable to
     # compile for x86_64 and took a release build with it. the voice model
     # in Sources/Resources/Voice is the one this version's VadManager is
-    # written for: moving the pin means checking it.
-    exactVersion: 0.15.5
+    # written for: moving the pin means checking it. checked at 0.18.3:
+    # VadManager and ModelNames.VAD.sileroVad are unchanged since 0.15.5.
+    # 0.17.3 is the first with parakeet ultra (`AsrModelVersion.ultra`).
+    exactVersion: 0.18.3
   WhisperKit:
     url: https://github.com/argmaxinc/WhisperKit
     # the meeting engine (ADR 0040). pinned for the same reason as above.

@@ -1984,12 +1984,12 @@ final class MeetingCoordinator: ObservableObject {
     }
 
     /// The order a spool is read in when the model that recorded it is gone:
-    /// the one that translates, then the faster whisper, then parakeet v3,
-    /// which only knows english and the european languages, then whistle,
-    /// which knows seven of them, then parakeet v2, which only knows
-    /// english.
+    /// the one that translates, then the faster whisper, then parakeet
+    /// ultra and v3, which only know english and the european languages
+    /// (ultra the better of the two), then whistle, which knows seven of
+    /// them, then parakeet v2, which only knows english.
     private static let modelsToRecoverWith: [SpeechModel] = [
-        .whisperLargeV3, .whisperLargeV3Turbo, .parakeetV3, .whistle, .parakeetV2,
+        .whisperLargeV3, .whisperLargeV3Turbo, .parakeetUltra, .parakeetV3, .whistle, .parakeetV2,
     ]
 
     /// A transcriber for the model a spool was recorded with, or for another
