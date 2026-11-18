@@ -1,3 +1,12 @@
+## 0.15.0
+
+Husky gets your words right more often.
+
+- **Fixes mistakes using what's around your cursor.** Turn it on in Settings › AI. Husky reads the text near your cursor and asks your AI provider to fix names and terms it misheard, so "Versal" becomes "Vercel" when you're writing about Vercel. It only fixes; it never rephrases. Off by default. With Apple Intelligence it all stays on this Mac. Rewrites get the same context while it's on.
+- **Close misspellings of your words snap to the right spelling.** "versel" becomes "Vercel" and "type script" becomes "TypeScript", using the words in your dictionary. Ordinary English words are never touched. On by default, in Settings › Dictionary.
+- **Ums and uhs are gone.** Husky removes "um", "uh", "erm" and "hmm", and leaves words that mean something, like "like" and "you know". On by default, in Settings › Dictation.
+- **A new speech model: Parakeet Ultra.** The same 25 languages and speed as Parakeet v3, with fewer mistakes. Pick it in Settings › Dictation. Speech engine updated to FluidAudio 0.18.3.
+
 ## 0.14.0
 
 The first Husky release. It starts from Andrew Dictate 0.13.1 (jass, via Suriya's fork) and adds:
