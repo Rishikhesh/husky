@@ -62,7 +62,7 @@ rm -rf "$STAGE"
 SHA="$(shasum -a 256 "$DMG" | awk '{print $1}')"
 
 echo "▸ commit, tag, push"
-git add project.yml
+git add project.yml Sources/Info.plist
 git commit -q -m "release ${VERSION}"
 git tag "v${VERSION}"
 git "${GIT_AUTH[@]}" push -q origin HEAD "v${VERSION}"
