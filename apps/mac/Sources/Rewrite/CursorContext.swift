@@ -54,16 +54,39 @@ struct CursorContext: Equatable, Sendable {
         )
     }
 
-    /// a password field is never read, whatever else it says it is.
+    /// a password field is never read, whatever else it says it is. an
+    /// element that does not say what it is (no answer, or too slow) is not
+    /// read either: the check fails closed.
     static func isReadable(role: String?, subrole: String?) -> Bool {
+        guard let role else { return false }
         let secure = kAXSecureTextFieldSubrole as String
         return role != secure && subrole != secure
+    }
+
+    /// terminals are never read: their text is command output that anyone
+    /// can write (a web page through curl, a repo's commit messages), and
+    /// a pasted line break there runs a command. their scrollback can also
+    /// hold tokens printed by `env` or a CLI.
+    static let terminals: Set<String> = [
+        "com.apple.Terminal", "com.googlecode.iterm2", "dev.warp.Warp-Stable",
+        "com.mitchellh.ghostty", "net.kovidgoyal.kitty", "org.alacritty",
+        "com.github.wez.wezterm", "co.zeit.hyper", "com.raphaelamorim.rio",
+    ]
+
+    /// text from another app shown to the model: angle brackets become
+    /// lookalikes, so nothing in it can close or open the prompt's tags.
+    static func defanged(_ text: String) -> String {
+        text.replacingOccurrences(of: "<", with: "‹")
+            .replacingOccurrences(of: ">", with: "›")
     }
 
     /// what the model is shown: where the words will land, between which
     /// text, in which app. the tags keep it data, never instructions.
     var promptBlock: String {
-        let app = appName.map { " in \($0)" } ?? ""
+        let app = appName.map { " in \(Self.defanged($0))" } ?? ""
+        let before = Self.defanged(before)
+        let selected = Self.defanged(selected)
+        let after = Self.defanged(after)
         let placement = selected.isEmpty
             ? "The dictation will be inserted at the cursor\(app), between <before_cursor> and <after_cursor>."
             : "The dictation will replace <selected_text>\(app), between <before_cursor> and <after_cursor>. The selected text is context only; it will not remain."
@@ -88,7 +111,8 @@ extension CursorContext {
     @MainActor
     static func read(workspace: NSWorkspace = .shared) async -> CursorContext? {
         guard let app = workspace.frontmostApplication,
-              app.bundleIdentifier != AppIdentity.bundleID else {
+              app.bundleIdentifier != AppIdentity.bundleID,
+              !terminals.contains(app.bundleIdentifier ?? "") else {
             return nil
         }
         let pid = app.processIdentifier
@@ -224,12 +248,49 @@ enum ContextFixUp {
 
     /// the model's answer if it reads like a fix of `original`, else
     /// `original`.
+    private static func lineBreaks(in text: String) -> Int {
+        text.reduce(0) { $1.isNewline ? $0 + 1 : $0 }
+    }
+
+    /// lower-cased words with their punctuation off, for comparing a fix
+    /// with what was heard.
+    private static func words(in text: String) -> [String] {
+        text.split(whereSeparator: \.isWhitespace).map {
+            String($0.lowercased().unicodeScalars.filter {
+                CharacterSet.alphanumerics.contains($0)
+            })
+        }.filter { !$0.isEmpty }
+    }
+
     static func accepted(_ answer: String?, for original: String) -> String {
         guard let answer else { return original }
         let cleaned = RewriteInstructions.cleanAnswer(answer)
         guard !cleaned.isEmpty else { return original }
         let allowed = max(slack, Int(Double(original.count) * largestChange))
         guard abs(cleaned.count - original.count) <= allowed else {
+            return original
+        }
+        // a fix changes a few words; it never adds lines. text near the
+        // cursor is untrusted (an email, a web page), so an answer that
+        // reads like something else entirely is not pasted.
+        guard lineBreaks(in: cleaned) == lineBreaks(in: original) else {
+            return original
+        }
+        let heard = words(in: original)
+        let fixed = words(in: cleaned)
+        guard abs(fixed.count - heard.count) <= max(1, heard.count / 8) else {
+            return original
+        }
+        var unused = heard.reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
+        var newWords = 0
+        for word in fixed {
+            if let left = unused[word], left > 0 {
+                unused[word] = left - 1
+            } else {
+                newWords += 1
+            }
+        }
+        guard newWords <= max(2, heard.count / 4) else {
             return original
         }
         return cleaned

@@ -1191,3 +1191,13 @@ private final class FakeRunner: CommandRunner, @unchecked Sendable {
         }
     }
 }
+
+extension UpdateCheckTests {
+    func testWhatsNewOnlyOpensAHuskyReleasePage() {
+        let release = URL(string: "https://github.com/Rishikhesh/husky/releases/tag/v1.0.0")!
+        XCTAssertEqual(UpdateCheck.trustedPage(release), release)
+        for bad in ["file:///etc/passwd", "https://evil.example/husky", "http://github.com/Rishikhesh/husky/releases", "https://github.com/someone/else"] {
+            XCTAssertEqual(UpdateCheck.trustedPage(URL(string: bad)!), UpdateOffer.releasesPage, bad)
+        }
+    }
+}

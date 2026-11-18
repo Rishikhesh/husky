@@ -1,3 +1,13 @@
+## 0.15.2
+
+Security fixes from a review of the code.
+
+- **Fixing mistakes using what's around your cursor is harder to trick.** Text near your cursor can come from anyone: an email, a web page. If it tried to steer the AI, Husky now pastes your own words instead of an answer that adds lines or changes more than a few words. Terminals are never read, and a field that won't say whether it's a password field isn't read either.
+- **Links in meeting notes only open web pages**, never files or other apps.
+- **"What's New" only opens a Husky release page.**
+- Restarting after an update no longer builds a shell command out of the app's folder name.
+- Settings › AI now says that the app's name and your dictionary words are sent along with the text around your cursor.
+
 ## 0.15.1
 
 A fix for 0.15.0's two new switches. With "Remove ums and uhs" or "Match close misspellings of your words" turned off, Fix a Word's preview and learning from your corrections still behaved as if they were on. Now every part of Husky follows all three cleanup switches.

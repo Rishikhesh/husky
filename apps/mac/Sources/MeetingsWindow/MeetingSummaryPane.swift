@@ -280,6 +280,12 @@ struct MeetingNotesView: View {
             ?? AttributedString(text)
         let intents = AttributeScopes.FoundationAttributes.InlinePresentationIntentAttribute.self
         for run in parsed.runs {
+            // the notes are written by an AI from what other people said in
+            // the call: a link may only go to a web page, never file:// or
+            // another app's URL scheme.
+            if let link = run.link, !["http", "https"].contains(link.scheme?.lowercased() ?? "") {
+                parsed[run.range].link = nil
+            }
             if let intent = run[intents], intent.contains(.code) {
                 parsed.setFont(run.range, .system(.callout, design: .monospaced))
                 parsed.paint(run.range, background: Color.primary.opacity(0.07))

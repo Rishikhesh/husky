@@ -521,7 +521,7 @@ struct RewriteSettingsView: View {
         case (_, false):
             "a rewrite sends what you said, a summary sends what a meeting heard, and nothing else, to \(settings.provider.shortName). keys and sign-ins stay in your keychain."
         case (_, true):
-            "every dictation and the text around your cursor, a rewrite and a summary are sent to \(settings.provider.shortName), and nothing else. keys and sign-ins stay in your keychain."
+            "every dictation with the text around your cursor, the app's name and your dictionary words, a rewrite and a summary are sent to \(settings.provider.shortName), and nothing else. terminals and password fields are never read. keys and sign-ins stay in your keychain."
         }
     }
 

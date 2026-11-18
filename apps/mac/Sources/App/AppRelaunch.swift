@@ -17,12 +17,17 @@ enum AppRelaunch {
         task.executableURL = URL(fileURLWithPath: "/bin/sh")
         // fifteen seconds is the ceiling, not the plan: a process that will
         // not die must not leave a shell spinning forever.
+        // the pid and path go in as arguments, never into the script: a
+        // folder name with a quote or $( ) in it must not become a command.
         task.arguments = [
             "-c",
             """
-            for _ in $(seq 60); do kill -0 \(pid) 2>/dev/null || break; \
-            sleep 0.25; done; open "\(path)"
-            """
+            for _ in $(seq 60); do kill -0 "$1" 2>/dev/null || break; \
+            sleep 0.25; done; open "$2"
+            """,
+            "sh",
+            String(pid),
+            path,
         ]
         try? task.run()
         NSApp.terminate(nil)

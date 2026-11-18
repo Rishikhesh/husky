@@ -95,6 +95,17 @@ enum UpdateCheck {
             from: latestReleaseURL
         )
         let release = try JSONDecoder().decode(Release.self, from: data)
-        return Latest(version: release.tagName, page: release.htmlURL)
+        return Latest(version: release.tagName, page: trustedPage(release.htmlURL))
+    }
+
+    /// the page "What's New" opens: the release's own page only when it is
+    /// a Husky release on github.com over https, else the releases list. a
+    /// response must never pick a file:// or another app's URL to open.
+    static func trustedPage(_ url: URL) -> URL {
+        url.scheme == "https"
+            && url.host == "github.com"
+            && url.path.hasPrefix("/Rishikhesh/husky/")
+            ? url
+            : UpdateOffer.releasesPage
     }
 }
