@@ -24,8 +24,8 @@ enum PipelineStage: String, CaseIterable, Identifiable, Sendable {
             "parakeet turns what you said into words. on-device."
         case .deterministic:
             """
-            eight rules: your dictionary, punctuation you spoke, emails, \
-            numbers. it never rewrites your words.
+            your dictionary, punctuation you spoke, emails, numbers, and \
+            ums if you like. it never rewrites your words.
             """
         }
     }
@@ -60,6 +60,10 @@ struct PipelineStageResult: Equatable, Sendable, Identifiable {
 /// without shipping yourself a broken dictation.
 struct PipelineSelection: Equatable, Sendable {
     var deterministicEnabled = true
+    /// the two dictionary-and-cleanup options, mirrored from settings so
+    /// the preview is the line you would get.
+    var fuzzyMatching = true
+    var removeFillers = true
 
     func isEnabled(_ stage: PipelineStage) -> Bool {
         switch stage {
