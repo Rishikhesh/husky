@@ -27,6 +27,26 @@ struct DeterministicCleaner: Cleaner {
         self.removeFillers = removeFillers
     }
 
+    /// the three cleanup switches at once. every cleaner the app builds
+    /// outside the main dictation path takes these, so none of them can
+    /// quietly fall back to a default the user turned off.
+    init(entries: [DictionaryEntry], options: CleanupOptions) {
+        self.init(
+            entries: entries,
+            fullCleanup: options.fullCleanup,
+            fuzzyMatching: options.fuzzyMatching,
+            removeFillers: options.removeFillers
+        )
+    }
+
+    var options: CleanupOptions {
+        CleanupOptions(
+            fullCleanup: fullCleanup,
+            fuzzyMatching: fuzzyMatching,
+            removeFillers: removeFillers
+        )
+    }
+
     /// `continuingASentence` is the one thing the pipeline knows about the
     /// place the words are going: the caret sits mid-sentence, so the first
     /// word keeps the case it was said in. nowhere to read it (the fix-a-word
@@ -104,5 +124,22 @@ struct DeterministicCleaner: Cleaner {
             PunctuationFinishing(),
         ]
         return stages
+    }
+}
+
+/// the user's three cleanup switches: Clean up, Match close misspellings,
+/// Remove ums and uhs. one value, so a cleaner is built from all of them or
+/// none.
+struct CleanupOptions: Equatable, Sendable {
+    var fullCleanup = true
+    var fuzzyMatching = true
+    var removeFillers = true
+
+    /// the same switches with cleanup off: raw words, the dictionary (and its
+    /// close-misspelling matching) still applied.
+    var raw: CleanupOptions {
+        var options = self
+        options.fullCleanup = false
+        return options
     }
 }

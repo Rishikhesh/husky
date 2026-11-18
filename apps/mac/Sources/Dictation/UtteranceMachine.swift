@@ -1371,7 +1371,7 @@ final class UtteranceMachine {
             let cleanedTranscript = intoOurOwnUI
                 ? DeterministicCleaner(
                     entries: dictionary(),
-                    fullCleanup: false
+                    options: cleaner.options.raw
                 ).clean(transcript, continuingASentence: continuingASentence)
                 : cleaner.clean(transcript, continuingASentence: continuingASentence)
             activeTimeline?.cleaned = clock.now

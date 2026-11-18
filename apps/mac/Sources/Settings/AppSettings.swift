@@ -162,6 +162,15 @@ final class AppSettings: ObservableObject {
 
     /// cleanup takes out um, uh, erm and hmm. part of cleanup, so off with
     /// it: cleanup off means the words as heard.
+    /// the three cleanup switches together, for anything that builds a cleaner.
+    var cleanupOptions: CleanupOptions {
+        CleanupOptions(
+            fullCleanup: cleanupEnabled,
+            fuzzyMatching: fuzzyDictionaryEnabled,
+            removeFillers: removeFillersEnabled
+        )
+    }
+
     @Published var removeFillersEnabled: Bool {
         didSet {
             guard removeFillersEnabled != oldValue else {

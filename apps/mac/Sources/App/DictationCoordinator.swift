@@ -206,7 +206,7 @@ final class DictationCoordinator: ObservableObject {
     private lazy var learningFromCorrections: LearningFromCorrections = {
         let learning = LearningFromCorrections(
             store: dictionaryStore,
-            fullCleanup: { [settings] in settings.cleanupEnabled }
+            cleanupOptions: { [settings] in settings.cleanupOptions }
         )
         learning.onLearned = { [weak self] entry in
             self?.announceLearned(entry)
@@ -792,10 +792,10 @@ final class DictationCoordinator: ObservableObject {
         let controller = WordFixerWindowController(
             transcript: DeterministicCleaner(
                 entries: dictionaryStore.entries,
-                fullCleanup: settings.cleanupEnabled
+                options: settings.cleanupOptions
             ).asHeard(heard),
             store: dictionaryStore,
-            fullCleanup: settings.cleanupEnabled,
+            cleanupOptions: settings.cleanupOptions,
             shortcut: settings.fixAWordShortcut
         )
         wordFixerWindowController = controller

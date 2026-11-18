@@ -26,16 +26,16 @@ final class WordFixerViewModel: ObservableObject {
     private let store: DictionaryStore
     /// the mode the real pipeline is in, so the line you copy out of here is
     /// the line saying it again would produce.
-    private let fullCleanup: Bool
+    private let options: CleanupOptions
 
     init(
         transcript: String,
         store: DictionaryStore,
-        fullCleanup: Bool = true
+        options: CleanupOptions = CleanupOptions()
     ) {
         correction = TranscriptCorrection(transcript: transcript)
         self.store = store
-        self.fullCleanup = fullCleanup
+        self.options = options
     }
 
     /// The sentence that made you open this window, with the words you just
@@ -44,7 +44,7 @@ final class WordFixerViewModel: ObservableObject {
     /// *is* the corrected line — this is not a second pass over cleaned text,
     /// which would capitalize and punctuate twice.
     var fixedLine: String {
-        DeterministicCleaner(entries: store.entries, fullCleanup: fullCleanup)
+        DeterministicCleaner(entries: store.entries, options: options)
             .clean(correction.transcript)
     }
 

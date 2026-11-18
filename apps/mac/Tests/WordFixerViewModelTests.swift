@@ -183,7 +183,7 @@ final class WordFixerViewModelTests: XCTestCase {
         let model = WordFixerViewModel(
             transcript: "send the jason to cypher d and cc darsh",
             store: store,
-            fullCleanup: false
+            options: CleanupOptions(fullCleanup: false)
         )
         model.tap(2)
         model.replacement = "JSON"
@@ -214,5 +214,50 @@ final class WordFixerViewModelTests: XCTestCase {
         XCTAssertNotNil(model.failure)
         XCTAssertEqual(model.selectedPhrase, "jason", "your work is not thrown away")
         XCTAssertTrue(model.saved.isEmpty, "nothing claims to have been saved")
+    }
+
+    /// the preview follows every cleanup switch, not just Clean up: with
+    /// Remove ums and uhs off, the um that was pasted is in the preview too.
+    func testThePreviewKeepsUmsWhenFillerRemovalIsOff() {
+        let store = DictionaryStore(fileURL: storeURL)
+        let kept = WordFixerViewModel(
+            transcript: "um send the notes",
+            store: store,
+            options: CleanupOptions(removeFillers: false)
+        )
+        let removed = WordFixerViewModel(
+            transcript: "um send the notes",
+            store: store,
+            options: CleanupOptions(removeFillers: true)
+        )
+
+        XCTAssertTrue(kept.fixedLine.lowercased().hasPrefix("um"), kept.fixedLine)
+        XCTAssertFalse(removed.fixedLine.lowercased().hasPrefix("um"), removed.fixedLine)
+    }
+
+    /// and with Match close misspellings off, a near miss stays as heard.
+    func testThePreviewLeavesNearMissesWhenFuzzyMatchingIsOff() {
+        let store = DictionaryStore(fileURL: storeURL)
+        _ = store.add(DictionaryEntry(wrong: "versell", right: "Vercel"))
+        let off = WordFixerViewModel(
+            transcript: "deploy it to versel today",
+            store: store,
+            options: CleanupOptions(fuzzyMatching: false)
+        )
+        let on = WordFixerViewModel(
+            transcript: "deploy it to versel today",
+            store: store,
+            options: CleanupOptions(fuzzyMatching: true)
+        )
+
+        XCTAssertFalse(off.fixedLine.contains("Vercel"), off.fixedLine)
+        XCTAssertTrue(on.fixedLine.contains("Vercel"), on.fixedLine)
+    }
+
+    /// cleanup off keeps the other two switches as they were.
+    func testRawOptionsOnlyTurnCleanupOff() {
+        let options = CleanupOptions(fullCleanup: true, fuzzyMatching: false, removeFillers: true)
+        XCTAssertEqual(options.raw, CleanupOptions(fullCleanup: false, fuzzyMatching: false, removeFillers: true))
+        XCTAssertEqual(DeterministicCleaner(entries: [], options: options).options, options)
     }
 }

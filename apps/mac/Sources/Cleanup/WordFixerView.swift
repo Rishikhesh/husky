@@ -247,13 +247,13 @@ final class WordFixerWindowController: NSWindowController {
     init(
         transcript: String,
         store: DictionaryStore,
-        fullCleanup: Bool = true,
+        cleanupOptions: CleanupOptions = CleanupOptions(),
         shortcut: MeetingShortcut? = nil
     ) {
         let viewModel = WordFixerViewModel(
             transcript: transcript,
             store: store,
-            fullCleanup: fullCleanup
+            options: cleanupOptions
         )
         // the view closes its window on esc; the window is made after it.
         weak var closing: NSWindow?

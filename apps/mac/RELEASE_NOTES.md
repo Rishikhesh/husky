@@ -1,3 +1,7 @@
+## 0.15.1
+
+A fix for 0.15.0's two new switches. With "Remove ums and uhs" or "Match close misspellings of your words" turned off, Fix a Word's preview and learning from your corrections still behaved as if they were on. Now every part of Husky follows all three cleanup switches.
+
 ## 0.15.0
 
 Husky gets your words right more often.

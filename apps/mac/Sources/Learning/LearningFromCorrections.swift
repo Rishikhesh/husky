@@ -10,9 +10,9 @@ final class LearningFromCorrections {
     var onLearned: ((DictionaryEntry) -> Void)?
 
     private let store: DictionaryStore
-    /// your cleanup setting, read when an entry is tried rather than when
+    /// your cleanup settings, read when an entry is tried rather than when
     /// the app started.
-    private let fullCleanup: @MainActor () -> Bool
+    private let cleanupOptions: @MainActor () -> CleanupOptions
     private var learner = CorrectionLearner()
     private var watcher: AXSpanWatcher?
     /// the field being looked up, off the main thread, before its watch.
@@ -20,10 +20,10 @@ final class LearningFromCorrections {
 
     init(
         store: DictionaryStore,
-        fullCleanup: @escaping @MainActor () -> Bool
+        cleanupOptions: @escaping @MainActor () -> CleanupOptions
     ) {
         self.store = store
-        self.fullCleanup = fullCleanup
+        self.cleanupOptions = cleanupOptions
     }
 
     /// a dictation was pasted with focus where we left it. the field it
@@ -83,12 +83,12 @@ final class LearningFromCorrections {
     }
 
     private func settled(_ edited: String) {
-        let fullCleanup = fullCleanup()
+        let options = cleanupOptions()
         let learned = learner.settle(
             edited: edited,
             dictionary: store.entries,
             neverLearn: store.neverLearn,
-            cleaner: { DeterministicCleaner(entries: $0, fullCleanup: fullCleanup) }
+            cleaner: { DeterministicCleaner(entries: $0, options: options) }
         )
         for entry in learned where store.add(entry) {
             onLearned?(entry)
