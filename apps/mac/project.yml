@@ -53,6 +53,10 @@ targets:
       # the whistle engine is apache-2.0, and its licence travels with it.
       - path: Sources/Resources/Licenses/needle-LICENSE.txt
         buildPhase: resources
+      # the common-words list fuzzy dictionary matching keeps its hands off
+      # is from SCOWL, whose notice travels with it.
+      - path: Sources/Resources/Licenses/scowl-LICENSE.txt
+        buildPhase: resources
     dependencies:
       - package: FluidAudio
       - package: WhisperKit
