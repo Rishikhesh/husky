@@ -47,3 +47,47 @@ final class SpeechModelCardsTests: XCTestCase {
         XCTAssertEqual(choices, [RecordWith.Choice(model: .whistle, title: "whistle")])
     }
 }
+
+/// parakeet ultra: a third parakeet, run by FluidAudio like the other two,
+/// stored by its own name and offered on both jobs' cards.
+@MainActor
+final class ParakeetUltraTests: XCTestCase {
+    func testItIsAParakeetWithItsOwnStoredName() throws {
+        XCTAssertEqual(SpeechModel.parakeetUltra.family, .parakeet)
+        XCTAssertNil(SpeechModel.parakeetUltra.whisperVariant)
+        XCTAssertFalse(SpeechModel.parakeetUltra.translatesToEnglish)
+        let stored = try JSONEncoder().encode(SpeechModel.parakeetUltra)
+        XCTAssertEqual(String(decoding: stored, as: UTF8.self), #""parakeetUltra""#)
+        XCTAssertEqual(try JSONDecoder().decode(SpeechModel.self, from: stored), .parakeetUltra)
+        XCTAssertEqual(SpeechModel(storedDictationValue: "parakeetUltra"), .parakeetUltra)
+    }
+
+    /// dictation lists it after the english default and before v3, which
+    /// it beats at the same speed.
+    func testDictationOffersItBeforeV3() throws {
+        let cards = SpeechModel.cards(for: .dictation)
+        let ultra = try XCTUnwrap(cards.firstIndex(of: .parakeetUltra))
+        XCTAssertEqual(ultra, 1)
+        XCTAssertLessThan(ultra, try XCTUnwrap(cards.firstIndex(of: .parakeetV3)))
+    }
+
+    func testItsCardSaysWhatItCosts() {
+        let model = SpeechModel.parakeetUltra
+        XCTAssertEqual(model.shortName, "parakeet ultra")
+        XCTAssertEqual(model.approximateSize, "~630 mb")
+        XCTAssertNil(model.badge)
+        XCTAssertTrue(model.trait(for: .dictation).contains("25 languages"))
+        XCTAssertTrue(model.trait(for: .meetings).contains("european languages only"))
+        XCTAssertEqual(model.dictationPace, SpeechModel.parakeetV3.dictationPace)
+    }
+
+    /// a dictation choice of ultra survives a relaunch.
+    func testDictationKeepsTheChoice() {
+        let defaults = UserDefaults(suiteName: "ParakeetUltraTests.\(UUID().uuidString)")!
+        let settings = AppSettings(userDefaults: defaults)
+        settings.dictationModel = .parakeetUltra
+        XCTAssertEqual(AppSettings(userDefaults: defaults).dictationModel, .parakeetUltra)
+        settings.meetingModel = .parakeetUltra
+        XCTAssertEqual(AppSettings(userDefaults: defaults).meetingModel, .parakeetUltra)
+    }
+}
