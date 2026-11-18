@@ -109,8 +109,8 @@ targets:
       path: Sources/Info.plist
       properties:
         CFBundleDisplayName: $(PRODUCT_NAME)
-        CFBundleShortVersionString: "0.13.1"
-        CFBundleVersion: "6"
+        CFBundleShortVersionString: "0.14.0"
+        CFBundleVersion: "1564"
         LSUIElement: true
         # deliberately no LSMultipleInstancesProhibited: this block is
         # target-wide, so it cannot be gated to release, and it would make
