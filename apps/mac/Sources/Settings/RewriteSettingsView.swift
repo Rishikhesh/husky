@@ -42,10 +42,18 @@ struct RewriteSettingsView: View {
                 }
             }
 
+            Section("Dictation") {
+                SettingsToggleRow(
+                    "fix mistakes using what's around your cursor",
+                    explanation: "after you dictate, \(settings.provider.shortName) fixes misheard names and terms using the text near your cursor. rewrites see that text too.",
+                    isOn: $settings.usesCursorContext
+                )
+            }
+
             Section("Rewrite") {
                 SettingsToggleRow(
                     "rewrite with \(gesture)",
-                    explanation: "hold \(gesture), talk, let go, and an ai rewrites it before it lands. plain \(dictationKey.displayName) never leaves this mac.",
+                    explanation: rewriteExplanation,
                     isOn: $settings.isEnabled
                 )
                 keyRow
@@ -505,12 +513,23 @@ struct RewriteSettingsView: View {
     }
 
     private var privacyLine: String {
-        switch settings.provider {
-        case .apple:
+        switch (settings.provider, settings.usesCursorContext) {
+        case (.apple, false):
             "apple's model runs on this mac: neither a rewrite nor a summary leaves it."
-        default:
+        case (.apple, true):
+            "apple's model runs on this mac: rewrites, fixes, summaries and the text around your cursor all stay on it."
+        case (_, false):
             "a rewrite sends what you said, a summary sends what a meeting heard, and nothing else, to \(settings.provider.shortName). keys and sign-ins stay in your keychain."
+        case (_, true):
+            "every dictation and the text around your cursor, a rewrite and a summary are sent to \(settings.provider.shortName), and nothing else. keys and sign-ins stay in your keychain."
         }
+    }
+
+    /// "never leaves this mac" holds only while the fix-up is off or local.
+    private var rewriteExplanation: String {
+        let staysHere = !settings.usesCursorContext || !settings.provider.needsNetwork
+        return "hold \(gesture), talk, let go, and an ai rewrites it before it lands."
+            + (staysHere ? " plain \(dictationKey.displayName) never leaves this mac." : "")
     }
 }
 
