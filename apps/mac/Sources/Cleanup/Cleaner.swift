@@ -7,13 +7,24 @@ protocol Cleaner {
 struct DeterministicCleaner: Cleaner {
     private let entries: [DictionaryEntry]
     private let fullCleanup: Bool
+    private let fuzzyMatching: Bool
+    private let removeFillers: Bool
 
     /// `fullCleanup: false` is the user's "cleanup off": the words come
     /// through as parakeet heard them, and only the dictionary still runs —
-    /// a word you taught it is yours regardless (ADR 0038).
-    init(entries: [DictionaryEntry] = [], fullCleanup: Bool = true) {
+    /// a word you taught it is yours regardless (ADR 0038). close-misspelling
+    /// matching is part of the dictionary stage, so it runs with cleanup off
+    /// too; filler removal is cleanup, so off means the ums stay.
+    init(
+        entries: [DictionaryEntry] = [],
+        fullCleanup: Bool = true,
+        fuzzyMatching: Bool = true,
+        removeFillers: Bool = true
+    ) {
         self.entries = entries
         self.fullCleanup = fullCleanup
+        self.fuzzyMatching = fuzzyMatching
+        self.removeFillers = removeFillers
     }
 
     /// `continuingASentence` is the one thing the pipeline knows about the
@@ -53,8 +64,12 @@ struct DeterministicCleaner: Cleaner {
     private func transforms(
         continuingASentence: Bool
     ) -> [any TranscriptTransform] {
+        let dictionary = DictionarySubstitutions(
+            entries: entries,
+            fuzzy: fuzzyMatching
+        )
         guard fullCleanup else {
-            return [DictionarySubstitutions(entries: entries)]
+            return [dictionary]
         }
         // ADR 0019 makes this order a behavior contract. ADR 0020 removed
         // the three stages that guessed at intent — self-corrections,
@@ -64,15 +79,30 @@ struct DeterministicCleaner: Cleaner {
         // the engine's own words, because that is what "fix a word" points
         // at. an entry keyed on parsed text — "7" where the engine heard
         // "seven" — stops firing (this amends ADR 0019's order).
-        return [
+        // the dictionary stage matches exact rows first, then (when on)
+        // snaps close misspellings onto your right-hand spellings; both
+        // read the engine's words, so neither moves.
+        // filler removal amends ADR 0020 as a setting, on by default: pure
+        // hesitation sounds only (um, uh, erm, hmm — never "like" or "you
+        // know"). it runs after the parsers, so spoken commas around a
+        // filler are already real ones it can tidy, and before
+        // capitalization and punctuation finishing, so "um, so" still
+        // starts with a capital and the spacing it leaves is closed up.
+        var stages: [any TranscriptTransform] = [
             UnicodeWhitespaceNormalizer(),
-            DictionarySubstitutions(entries: entries),
+            dictionary,
             SpokenPunctuation(),
             EmailParser(),
             URLParser(),
             NumberParser(),
+        ]
+        if removeFillers {
+            stages.append(FillerRemoval())
+        }
+        stages += [
             Capitalization(continuingASentence: continuingASentence),
             PunctuationFinishing(),
         ]
+        return stages
     }
 }

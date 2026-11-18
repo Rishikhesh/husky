@@ -36,10 +36,10 @@ final class CleanerTests: XCTestCase {
         XCTAssertEqual(cleaner.clean("umbrella gptx"), "Umbrella gptx.")
     }
 
-    /// ADR 0020: "um" is a word you said. The cleaner renders speech as
-    /// writing; it does not edit you.
+    /// ADR 0020: "um" is a word you said. Filler removal is now a setting
+    /// (on by default); with it off, the cleaner leaves them.
     func testFillersAreLeftWhereYouSaidThem() {
-        let cleaner = DeterministicCleaner()
+        let cleaner = DeterministicCleaner(removeFillers: false)
 
         XCTAssertEqual(
             cleaner.clean("um, I uh think erm, this uhm works"),
@@ -480,8 +480,8 @@ final class CleanerTests: XCTestCase {
                 "we should we should ship tomorrow",
                 "we should we should ship tomorrow."
             ),
-            // fillers
-            ("the um value should be higher", "the um value should be higher."),
+            // fillers: removed by their own setting now, see
+            // FillerRemovalTests.
         ]
 
         for (input, expected) in cases {
@@ -707,7 +707,7 @@ final class CleanerTests: XCTestCase {
                 // no full stop: mail refuses a recipient with a dot on the
                 // end, and the link 404s with one.
                 "um send it to john at cypher dot io",
-                "Um send it to john@cypher.io"
+                "Send it to john@cypher.io"
             ),
             (
                 "visit cypher dot io slash docs",

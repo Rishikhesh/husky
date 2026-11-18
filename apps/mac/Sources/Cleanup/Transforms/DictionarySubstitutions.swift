@@ -7,8 +7,14 @@ struct DictionarySubstitutions: TranscriptTransform {
     }
 
     private let substitutions: [Substitution]
+    /// nil when close-misspelling matching is off. it runs after every
+    /// exact row, so an exact row always wins.
+    private let fuzzy: FuzzyTerms?
 
-    init(entries: [DictionaryEntry] = []) {
+    init(entries: [DictionaryEntry] = [], fuzzy: Bool = false) {
+        self.fuzzy = fuzzy
+            ? FuzzyTerms(preferred: entries.map(\.right))
+            : nil
         substitutions = entries.compactMap { entry in
             // both sides. an entry whose right side is empty compiles to an
             // empty replacement template, and then the rule deletes the word
@@ -44,13 +50,14 @@ struct DictionarySubstitutions: TranscriptTransform {
     }
 
     func apply(_ transcript: String) -> String {
-        substitutions.reduce(transcript) { result, substitution in
+        let exact = substitutions.reduce(transcript) { result, substitution in
             substitution.expression.stringByReplacingMatches(
                 in: result,
                 range: result.fullNSRange,
                 withTemplate: substitution.replacementTemplate
             )
         }
+        return fuzzy?.apply(exact) ?? exact
     }
 }
 

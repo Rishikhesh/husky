@@ -29,14 +29,19 @@ enum PipelineRun {
                     input: input,
                     output: DeterministicCleaner(
                         entries: entries,
-                        fullCleanup: false
+                        fullCleanup: false,
+                        fuzzyMatching: selection.fuzzyMatching
                     ).clean(input),
                     isEnabled: false
                 ),
             ]
         }
 
-        let cleaned = DeterministicCleaner(entries: entries).clean(input)
+        let cleaned = DeterministicCleaner(
+            entries: entries,
+            fuzzyMatching: selection.fuzzyMatching,
+            removeFillers: selection.removeFillers
+        ).clean(input)
         return [
             heard,
             PipelineStageResult(

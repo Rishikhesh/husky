@@ -145,6 +145,35 @@ final class AppSettings: ObservableObject {
         }
     }
 
+    /// the dictionary also snaps close misspellings of its right-hand
+    /// spellings ("versel" → "Vercel"). part of the dictionary stage, so it
+    /// applies with cleanup off too.
+    @Published var fuzzyDictionaryEnabled: Bool {
+        didSet {
+            guard fuzzyDictionaryEnabled != oldValue else {
+                return
+            }
+            userDefaults.set(
+                fuzzyDictionaryEnabled,
+                forKey: Self.fuzzyDictionaryEnabledKey
+            )
+        }
+    }
+
+    /// cleanup takes out um, uh, erm and hmm. part of cleanup, so off with
+    /// it: cleanup off means the words as heard.
+    @Published var removeFillersEnabled: Bool {
+        didSet {
+            guard removeFillersEnabled != oldValue else {
+                return
+            }
+            userDefaults.set(
+                removeFillersEnabled,
+                forKey: Self.removeFillersEnabledKey
+            )
+        }
+    }
+
     /// words the suggestion list has been told are not mistakes. half of any
     /// first list is spelled how it is spelled — "swiggy", "paneer" — so
     /// "not a mistake" is one click and has to stick.
@@ -352,6 +381,10 @@ final class AppSettings: ObservableObject {
     /// the pick survives the update.
     private static let dictationModelKey = "AndrewDictate.engineVersion"
     private static let cleanupEnabledKey = "AndrewDictate.cleanupEnabled"
+    private static let fuzzyDictionaryEnabledKey =
+        "AndrewDictate.fuzzyDictionaryEnabled"
+    private static let removeFillersEnabledKey =
+        "AndrewDictate.removeFillersEnabled"
     private static let dismissedSuggestionsKey =
         "AndrewDictate.dismissedSuggestions"
     private static let totalWordsDictatedKey =
@@ -503,6 +536,12 @@ final class AppSettings: ObservableObject {
         ) == nil
             ? true
             : userDefaults.bool(forKey: Self.cleanupEnabledKey)
+        fuzzyDictionaryEnabled = userDefaults.object(
+            forKey: Self.fuzzyDictionaryEnabledKey
+        ) as? Bool ?? true
+        removeFillersEnabled = userDefaults.object(
+            forKey: Self.removeFillersEnabledKey
+        ) as? Bool ?? true
 
         totalWordsDictated = max(
             0,

@@ -37,6 +37,17 @@ final class PipelinePlaygroundViewModel: ObservableObject {
         recompute()
     }
 
+    /// the settings pipe mirrors the two cleaner options the same way.
+    func setOptions(fuzzyMatching: Bool, removeFillers: Bool) {
+        guard selection.fuzzyMatching != fuzzyMatching
+            || selection.removeFillers != removeFillers else {
+            return
+        }
+        selection.fuzzyMatching = fuzzyMatching
+        selection.removeFillers = removeFillers
+        recompute()
+    }
+
     func useSample() {
         input = PipelineSample.text
         recompute()
