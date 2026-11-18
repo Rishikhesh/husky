@@ -31,3 +31,6 @@ apps/mac/.build-dev/
 # the fidelity tool is its own package (apps/mac/Tools/fidelity)
 apps/mac/Tools/fidelity/.build/
 .superpowers/
+
+# every local build folder (dev, release, per-agent)
+apps/mac/.build-*/

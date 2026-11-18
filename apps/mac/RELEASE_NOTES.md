@@ -1,3 +1,12 @@
+## 0.14.0
+
+The first Husky release. It starts from Andrew Dictate 0.13.1 (jass, via Suriya's fork) and adds:
+
+- **A listening orb** instead of the gold line. Pick one of nine orbs in Settings › Listening; it grows and shrinks with your voice, and lives in the menu bar too.
+- **A redesign of every window** in the Mac's own style: Light or Dark, your Mac's accent colour, Liquid Glass. Settings has a Home dashboard with today's words.
+- **Fix a Word from anywhere** with ⌃⌥F, changeable in Settings › Dictionary.
+- **A new name and icon.** Husky keeps its own settings and data, apart from Andrew Dictate.
+
 ## 0.13.1
 
 a fix for macs that said `no sound from MacBook Pro Microphone` on every press.

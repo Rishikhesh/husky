@@ -20,17 +20,33 @@ Press record in the menu bar, or say yes when it asks at the start of a call. It
 
 ## Install
 
-Apple silicon, macOS 26. Build it yourself:
+Apple silicon, macOS 26.
+
+```sh
+brew install --cask rishikhesh/tap/husky
+```
+
+It lives in the menu bar as an orb; there's no Dock icon. Setup asks for the microphone and Accessibility, and which jobs you want: dictation (~460 MB) and, if you tick it, meetings (~2.9 GB).
+
+Husky is signed with a developer certificate but not notarized, so the cask clears the download quarantine for you. Prefer a file? Get the DMG from [Releases](https://github.com/Rishikhesh/husky/releases).
+
+## Update
+
+Husky checks once a day and the menu says when a new version is out; one click updates it through Homebrew. Or:
+
+```sh
+brew upgrade --cask rishikhesh/tap/husky
+```
+
+Your permissions carry over, because every release is signed the same way.
+
+## Build it yourself
 
 ```sh
 cd apps/mac
-xcodegen generate
-xcodebuild -project AndrewDictate.xcodeproj -scheme AndrewDictate -configuration Release \
-  -derivedDataPath .build-release build
-cp -R ".build-release/Build/Products/Release/Husky.app" /Applications/
+./dev.sh          # builds and runs Husky Dev, with its own permissions and data
+./release.sh 0.14.1   # maintainers: tests, signs, publishes the release and the cask
 ```
-
-For development, `apps/mac/dev.sh` builds and runs **Husky Dev**, which has its own permissions and data.
 
 ## Credits
 
