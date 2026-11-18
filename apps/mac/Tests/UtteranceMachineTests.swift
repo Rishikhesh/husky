@@ -42,7 +42,7 @@ final class UtteranceMachineTests: XCTestCase {
             inserter: inserter,
             clock: clock,
             dictionary: { [] },
-            ownBundleIdentifier: "gg.jass.dictate.dev",
+            ownBundleIdentifier: "com.rishikhesh.husky.dev",
             coolDuration: 0.3
         )
         machine.onEvent = { [weak self] event in
@@ -152,7 +152,7 @@ final class UtteranceMachineTests: XCTestCase {
     /// runs, full cleanup does not.
     func testDictatingIntoOurOwnWindowSkipsFullCleanup() async {
         let m = machine()
-        inserter.anchor = FakeAnchor(targetBundleIdentifier: "gg.jass.dictate.dev")
+        inserter.anchor = FakeAnchor(targetBundleIdentifier: "com.rishikhesh.husky.dev")
         engine.reply = .success("cache")
 
         await hold(m, for: .seconds(1))

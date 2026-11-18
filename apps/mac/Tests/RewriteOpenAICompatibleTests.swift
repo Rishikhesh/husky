@@ -78,7 +78,7 @@ final class RewriteOpenAICompatibleTests: XCTestCase {
         XCTAssertEqual(request?.timeoutInterval, 20)
         XCTAssertEqual(request?.httpShouldHandleCookies, false)
         XCTAssertEqual(request?.cachePolicy, .reloadIgnoringLocalCacheData)
-        XCTAssertEqual(request?.value(forHTTPHeaderField: "User-Agent"), "andrew-dictate")
+        XCTAssertEqual(request?.value(forHTTPHeaderField: "User-Agent"), "husky")
     }
 
     func testAPickedModelIsNotToldAnEffort() throws {
@@ -108,7 +108,7 @@ final class RewriteOpenAICompatibleTests: XCTestCase {
             openRouter?.value(forHTTPHeaderField: "HTTP-Referer"),
             "https://dictate.jass.gg"
         )
-        XCTAssertEqual(openRouter?.value(forHTTPHeaderField: "X-Title"), "Andrew Dictate")
+        XCTAssertEqual(openRouter?.value(forHTTPHeaderField: "X-Title"), "Husky")
         XCTAssertNil(openAI?.value(forHTTPHeaderField: "HTTP-Referer"))
         XCTAssertNil(openAI?.value(forHTTPHeaderField: "X-Title"))
     }

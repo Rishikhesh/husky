@@ -43,7 +43,7 @@ final class UpdateCheckTests: XCTestCase {
     func testTheUpgradeCommandIsExact() {
         XCTAssertEqual(
             UpdateCheck.upgradeCommand,
-            "brew upgrade --cask jassuwu/tap/andrew-dictate"
+            "brew upgrade --cask rishikhesh/tap/husky"
         )
     }
 
@@ -192,14 +192,14 @@ final class UpdateCheckTests: XCTestCase {
             line?.action,
             .openReleasePage(
                 URL(
-                    string: "https://github.com/jassuwu/andrew-dictate/releases/latest"
+                    string: "https://github.com/Rishikhesh/husky/releases/latest"
                 )!
             )
         )
     }
 
     func testTheInstallIsHomebrewOnlyWhenTheCaskroomHasIt() throws {
-        let caskroom = root.appendingPathComponent("andrew-dictate")
+        let caskroom = root.appendingPathComponent("husky")
         XCTAssertEqual(UpdateOffer.Install.detect(caskrooms: [caskroom]), .dmg)
 
         try FileManager.default.createDirectory(
@@ -216,8 +216,8 @@ final class UpdateCheckTests: XCTestCase {
     /// rosetta — keeps its caskroom there, and the upgrade runs that brew
     /// as readily as the one at /opt/homebrew.
     func testACaskroomUnderEitherBrewPrefixIsAHomebrewInstall() throws {
-        let appleSilicon = root.appendingPathComponent("opt/Caskroom/andrew-dictate")
-        let rosetta = root.appendingPathComponent("usr-local/Caskroom/andrew-dictate")
+        let appleSilicon = root.appendingPathComponent("opt/Caskroom/husky")
+        let rosetta = root.appendingPathComponent("usr-local/Caskroom/husky")
         XCTAssertEqual(
             UpdateOffer.Install.detect(caskrooms: [appleSilicon, rosetta]),
             .dmg
@@ -238,8 +238,8 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(
             UpdateOffer.Install.caskrooms.map { $0.path(percentEncoded: false) },
             [
-                "/opt/homebrew/Caskroom/andrew-dictate/",
-                "/usr/local/Caskroom/andrew-dictate/",
+                "/opt/homebrew/Caskroom/husky/",
+                "/usr/local/Caskroom/husky/",
             ]
         )
     }
@@ -333,7 +333,7 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(request.httpMethod, "GET")
         XCTAssertEqual(
             request.allHTTPHeaderFields,
-            ["User-Agent": "andrew-dictate", "Accept-Language": "en"]
+            ["User-Agent": "husky", "Accept-Language": "en"]
         )
         XCTAssertFalse(request.httpShouldHandleCookies)
         XCTAssertNil(request.httpBody)
@@ -540,7 +540,7 @@ final class UpdateCheckTests: XCTestCase {
     }
 
     private let releasesPage = URL(
-        string: "https://github.com/jassuwu/andrew-dictate/releases/latest"
+        string: "https://github.com/Rishikhesh/husky/releases/latest"
     )!
 
     /// a dmg install opens the page the dmg is on; the line stays put.
@@ -629,7 +629,7 @@ final class UpdateCheckTests: XCTestCase {
             UpdateOffer.click(.failedCopied, busy: false, brew: optBrew),
             UpdateOffer.Click(
                 state: .failedCopied,
-                effect: .copy("brew upgrade --cask jassuwu/tap/andrew-dictate")
+                effect: .copy("brew upgrade --cask rishikhesh/tap/husky")
             )
         )
     }
@@ -673,7 +673,7 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(command.executable.path, "/usr/local/bin/brew")
         XCTAssertEqual(
             command.arguments,
-            ["upgrade", "--cask", "jassuwu/tap/andrew-dictate"]
+            ["upgrade", "--cask", "rishikhesh/tap/husky"]
         )
         XCTAssertEqual(
             "brew " + command.arguments.joined(separator: " "),
@@ -866,7 +866,7 @@ final class UpdateCheckTests: XCTestCase {
         )
         XCTAssertEqual(
             world.pasteboard.string(forType: .string),
-            "brew upgrade --cask jassuwu/tap/andrew-dictate"
+            "brew upgrade --cask rishikhesh/tap/husky"
         )
         XCTAssertEqual(
             world.logged,
@@ -891,7 +891,7 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(world.handOff.state(offering: brewLine), .failedCopied)
         XCTAssertEqual(
             world.pasteboard.string(forType: .string),
-            "brew upgrade --cask jassuwu/tap/andrew-dictate"
+            "brew upgrade --cask rishikhesh/tap/husky"
         )
         XCTAssertEqual(
             world.logged,
@@ -917,7 +917,7 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(world.handOff.state(offering: brewLine), .failedCopied)
         XCTAssertEqual(
             world.pasteboard.string(forType: .string),
-            "brew upgrade --cask jassuwu/tap/andrew-dictate"
+            "brew upgrade --cask rishikhesh/tap/husky"
         )
         XCTAssertEqual(
             world.logged,
@@ -991,7 +991,7 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(world.handOff.state(offering: brewLine), .failedCopied)
         XCTAssertEqual(
             world.pasteboard.string(forType: .string),
-            "brew upgrade --cask jassuwu/tap/andrew-dictate"
+            "brew upgrade --cask rishikhesh/tap/husky"
         )
     }
 
@@ -1059,14 +1059,14 @@ final class UpdateCheckTests: XCTestCase {
         )
     }
 
-    /// a throwaway `Andrew Dictate.app`, with or without a readable plist.
+    /// a throwaway `Husky.app`, with or without a readable plist.
     private func makeBundle(
         version: String?,
         garbled: Bool = false
     ) throws -> URL {
         let bundle = root
             .appendingPathComponent(UUID().uuidString)
-            .appendingPathComponent("Andrew Dictate.app")
+            .appendingPathComponent("Husky.app")
         let contents = bundle.appendingPathComponent("Contents")
         try FileManager.default.createDirectory(
             at: contents,

@@ -30,7 +30,7 @@ enum PressDiagnostics {
         timeZone: TimeZone = .current
     ) -> String {
         var lines = [
-            "Andrew Dictate \(setup.appVersion) (\(setup.build))",
+            "Husky \(setup.appVersion) (\(setup.build))",
             "macOS \(setup.macOS)",
             "speech model \(setup.engine)",
             "default mic: "

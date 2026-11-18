@@ -36,7 +36,7 @@ struct ProcessRunner: CommandRunner {
     func run(_ command: Command) async -> CommandResult {
         let fileManager = FileManager.default
         let folder = fileManager.temporaryDirectory.appending(
-            path: "andrew-dictate-run-\(UUID().uuidString)",
+            path: "husky-run-\(UUID().uuidString)",
             directoryHint: .isDirectory
         )
         defer {

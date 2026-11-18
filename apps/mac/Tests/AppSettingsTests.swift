@@ -165,7 +165,7 @@ final class AppSettingsTests: XCTestCase {
         XCTAssertEqual(
             settings.meetingsFolder,
             FileManager.default.homeDirectoryForCurrentUser
-                .appendingPathComponent("andrew-dictate", isDirectory: true)
+                .appendingPathComponent("husky", isDirectory: true)
         )
         XCTAssertFalse(settings.meetingsFolder.pathComponents.contains("Documents"))
         XCTAssertNil(settings.meetingHook)
@@ -180,9 +180,9 @@ final class AppSettingsTests: XCTestCase {
         ).appendingPathComponent(UUID().uuidString, isDirectory: true)
         let legacy = home
             .appendingPathComponent("Documents", isDirectory: true)
-            .appendingPathComponent("andrew-dictate", isDirectory: true)
+            .appendingPathComponent("husky", isDirectory: true)
         let fallback = home
-            .appendingPathComponent("andrew-dictate", isDirectory: true)
+            .appendingPathComponent("husky", isDirectory: true)
         defer { try? FileManager.default.removeItem(at: home) }
 
         XCTAssertEqual(
@@ -252,7 +252,7 @@ final class AppSettingsTests: XCTestCase {
             .appendingPathComponent("Mobile Documents", isDirectory: true)
             .appendingPathComponent("com~apple~CloudDocs", isDirectory: true)
             .appendingPathComponent("Documents", isDirectory: true)
-            .appendingPathComponent("andrew-dictate", isDirectory: true)
+            .appendingPathComponent("husky", isDirectory: true)
 
         XCTAssertTrue(AppSettings.syncsToICloud(synced))
         XCTAssertFalse(AppSettings.syncsToICloud(AppSettings.defaultMeetingsFolder))

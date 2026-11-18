@@ -7,7 +7,7 @@
 # release and installing it on a second mac.
 #
 # Three things make that unnecessary:
-#   * the Debug configuration builds "Andrew Dictate Dev" as gg.jass.dictate.dev,
+#   * the Debug configuration builds "Husky Dev" as com.rishikhesh.husky.dev,
 #     so it has its own permissions, its own settings and its own data
 #   * it is signed with a *stable* identity, so its designated requirement does
 #     not change between builds and the grants survive a rebuild
@@ -16,7 +16,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-APP_NAME="Andrew Dictate Dev"
+APP_NAME="Husky Dev"
 INSTALL_PATH="/Applications/${APP_NAME}.app"
 DERIVED=".build-dev"
 
@@ -69,9 +69,9 @@ open "$INSTALL_PATH"
 
 cat <<NOTE
 
-running: ${APP_NAME}  (gg.jass.dictate.dev)
-  data:  ~/Library/Application Support/Andrew Dictate Dev/
-  logs:  log stream --predicate 'subsystem == "gg.jass.dictate.dev"'
+running: ${APP_NAME}  (com.rishikhesh.husky.dev)
+  data:  ~/Library/Application Support/Husky Dev/
+  logs:  log stream --predicate 'subsystem == "com.rishikhesh.husky.dev"'
 
 the shipped app is untouched — separate permissions, separate archive.
 NOTE

@@ -11,7 +11,7 @@ final class RemovalPlanTests: XCTestCase {
         try super.setUpWithError()
         root = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
-        support = root.appendingPathComponent("Andrew Dictate Dev", isDirectory: true)
+        support = root.appendingPathComponent("Husky Dev", isDirectory: true)
         models = root.appendingPathComponent("FluidAudio/Models", isDirectory: true)
         try FileManager.default.createDirectory(
             at: support, withIntermediateDirectories: true
@@ -282,7 +282,7 @@ extension RemovalPlanTests {
         nonisolated(unsafe) var resetFor: [String] = []
         // persistent domains are machine-wide, not per suite: a fixed name
         // would leak between runs and turn "fresh machine" into a lie.
-        let domain = "gg.jass.dictate.test-\(UUID().uuidString)"
+        let domain = "com.rishikhesh.husky.test-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: domain)!
         defer { defaults.removePersistentDomain(forName: domain) }
         let remover = Remover(
@@ -307,7 +307,7 @@ extension RemovalPlanTests {
 
     func testAPermissionResetThatFailsIsReported() {
         struct Nope: Error {}
-        let domain = "gg.jass.dictate.test-\(UUID().uuidString)"
+        let domain = "com.rishikhesh.husky.test-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: domain)!
         defer { defaults.removePersistentDomain(forName: domain) }
         let remover = Remover(
@@ -329,7 +329,7 @@ extension RemovalPlanTests {
             at: support.appendingPathComponent("meeting-spool/abc"), withIntermediateDirectories: true)
         try Data([1, 2, 3]).write(to: support.appendingPathComponent("hooks.log"))
         defer { try? FileManager.default.removeItem(at: support) }
-        let domain = "gg.jass.dictate.test-\(UUID().uuidString)"
+        let domain = "com.rishikhesh.husky.test-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: domain)!
         defer { defaults.removePersistentDomain(forName: domain) }
         let remover = Remover(

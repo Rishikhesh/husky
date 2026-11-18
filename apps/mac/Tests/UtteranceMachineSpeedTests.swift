@@ -36,7 +36,7 @@ final class UtteranceMachineSpeedTests: XCTestCase {
             inserter: custom ?? inserter,
             clock: clock,
             dictionary: { [] },
-            ownBundleIdentifier: "gg.jass.dictate.dev",
+            ownBundleIdentifier: "com.rishikhesh.husky.dev",
             coolDuration: 0.3
         )
         machine.onEvent = { [weak self] event in

@@ -121,7 +121,7 @@ struct KeychainCredentialStore: CredentialStoring {
             var add = query(account)
             add[kSecValueData] = data
             add[kSecAttrAccessible] = kSecAttrAccessibleAfterFirstUnlock
-            add[kSecAttrLabel] = "Andrew Dictate (\(account))"
+            add[kSecAttrLabel] = "Husky (\(account))"
             let added = SecItemAdd(add as CFDictionary, nil)
             guard added == errSecSuccess else {
                 throw CredentialStoreError.keychain(added)

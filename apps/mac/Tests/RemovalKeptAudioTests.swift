@@ -11,7 +11,7 @@ final class RemovalKeptAudioTests: XCTestCase {
         support = FileManager.default.temporaryDirectory
             .appendingPathComponent("removal-kept-audio-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: support, withIntermediateDirectories: true)
-        domain = "gg.jass.dictate.test-\(UUID().uuidString)"
+        domain = "com.rishikhesh.husky.test-\(UUID().uuidString)"
         defaults = UserDefaults(suiteName: domain)!
     }
 

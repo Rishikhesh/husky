@@ -48,7 +48,7 @@ final class RewriteChatGPTOAuthTests: XCTestCase {
             "code_challenge_method": "S256",
             "code_challenge": "the-challenge",
             "ext_agent_host_id": "urn:uuid:1b4e28ba-2fa1-41d2-883f-0016d3cca427",
-            "agent_name_hint": "Andrew Dictate",
+            "agent_name_hint": "Husky",
         ])
     }
 

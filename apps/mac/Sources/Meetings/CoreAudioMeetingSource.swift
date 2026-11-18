@@ -99,7 +99,7 @@ final class CoreAudioMeetingSource: MeetingAudioSource, @unchecked Sendable {
     /// Development only, compiled out of release: while this is set in the
     /// app's defaults, every tap build fails at its first call, so a check
     /// on a real mac can drive a meeting through a tap that will not come
-    /// back. `defaults write gg.jass.dictate.dev meetingTapRefused -bool
+    /// back. `defaults write com.rishikhesh.husky.dev meetingTapRefused -bool
     /// true`, and `defaults delete` to let it come back.
     static let tapRefusedKey = "meetingTapRefused"
     #endif
@@ -122,16 +122,16 @@ final class CoreAudioMeetingSource: MeetingAudioSource, @unchecked Sendable {
     }
 
     private let logger = Logger(subsystem: AppIdentity.loggingSubsystem, category: "tap")
-    private let queue = DispatchQueue(label: "gg.jass.dictate.meeting-io", qos: .userInitiated)
+    private let queue = DispatchQueue(label: "com.rishikhesh.husky.meeting-io", qos: .userInitiated)
     /// Everything said to the HAL that is not the audio itself: building and
     /// tearing down the rig, clearing a stale device, asking what is
     /// playing. One serial queue, so the sweep can never land on a device
     /// just built — and never the main thread, which only reads answers.
-    private let hal = DispatchQueue(label: "gg.jass.dictate.meeting-hal", qos: .userInitiated)
+    private let hal = DispatchQueue(label: "com.rishikhesh.husky.meeting-hal", qos: .userInitiated)
     /// Where the mic is followed: the device listeners call back here, and
     /// the handoff's decisions, its timer and its answers all happen here.
     /// Not the HAL queue, which a build can hold for seconds, or for good.
-    private let following = DispatchQueue(label: "gg.jass.dictate.meeting-mic", qos: .userInitiated)
+    private let following = DispatchQueue(label: "com.rishikhesh.husky.meeting-mic", qos: .userInitiated)
     private let lock = NSLock()
     private let deviceUID: String
 
@@ -900,7 +900,7 @@ final class CoreAudioMeetingSource: MeetingAudioSource, @unchecked Sendable {
             let description = CATapDescription(stereoGlobalTapButExcludeProcesses: [])
             description.isPrivate = true
             description.muteBehavior = .unmuted
-            description.name = "andrew dictate meeting tap"
+            description.name = "husky meeting tap"
 
             var tapID = AudioObjectID(0)
             try check(AudioHardwareCreateProcessTap(description, &tapID), "AudioHardwareCreateProcessTap", at: progress.stage)
@@ -934,7 +934,7 @@ final class CoreAudioMeetingSource: MeetingAudioSource, @unchecked Sendable {
                 : [kAudioSubDeviceUIDKey: part, kAudioSubDeviceDriftCompensationKey: true]
         }
         var aggregate: [String: Any] = [
-            kAudioAggregateDeviceNameKey: "andrew dictate meeting",
+            kAudioAggregateDeviceNameKey: "husky meeting",
             kAudioAggregateDeviceUIDKey: uid,
             kAudioAggregateDeviceMainSubDeviceKey: parts[0],
             kAudioAggregateDeviceIsPrivateKey: true,

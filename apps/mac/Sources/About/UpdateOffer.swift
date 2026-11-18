@@ -14,7 +14,7 @@ enum UpdateOffer {
             brew.deletingLastPathComponent()
                 .deletingLastPathComponent()
                 .appending(
-                    path: "Caskroom/andrew-dictate",
+                    path: "Caskroom/husky",
                     directoryHint: .isDirectory
                 )
         }
@@ -41,7 +41,7 @@ enum UpdateOffer {
     }
 
     static let releasesPage = URL(
-        string: "https://github.com/jassuwu/andrew-dictate/releases/latest"
+        string: "https://github.com/Rishikhesh/husky/releases/latest"
     )!
 
     struct Line: Equatable, Sendable {
@@ -95,7 +95,7 @@ enum UpdateOffer {
         )
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = false
-        request.setValue("andrew-dictate", forHTTPHeaderField: "User-Agent")
+        request.setValue("husky", forHTTPHeaderField: "User-Agent")
         request.setValue("en", forHTTPHeaderField: "Accept-Language")
         return request
     }

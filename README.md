@@ -1,54 +1,41 @@
-<p align="center">
-  <img src="apps/mac/art/og.png" alt="andrew dictate. escape the keyboard. dictation for talking to your agents. meeting transcripts your agents can read. free. fast. local." />
-</p>
+# Husky
 
-a mac app. it's alpha. the words and the formatting aren't always right, and [they get better over time](https://dictate.jass.gg/changelog).
+Dictation and meeting transcripts for the Mac, local and free. Hold a key, talk, let go: the text lands wherever your cursor is. A listening orb in your menu bar shows when it hears you.
 
-## dictate
+Husky is a personal fork of [Andrew Dictate](https://github.com/jassuwu/andrew-dictate) by [jass](https://jass.gg), by way of [Suriya's fork](https://github.com/suriyavasan/andrew-dictate). Thank you both.
 
-hold `fn`, talk, let go. the text lands where your cursor is, in any app. double-tap `fn` to talk hands-free, and `esc` throws it away. a dictionary fixes a word it keeps mishearing. if your keyboard eats `fn`, pick another key in settings. english, or 25 languages.
+## What's different from Andrew Dictate
 
-<p align="center">
-  <img src="apps/mac/art/demo-dictate.gif" width="760" alt="a prompt is typed into an agent and deleted. then fn is held, the same prompt is said, and when the key comes up it lands in the prompt box and the agent starts on it." />
-</p>
+- **A listening orb** instead of the gold line: pick one of nine orbs from [ThinkingOrbsKit](https://github.com/Jakubantalik/Libraries.dev). It grows and shrinks with your voice, and lives in the menu bar too.
+- **A redesigned app** in the Mac's own style: Light or Dark, your Mac's accent colour, Liquid Glass. That covers Settings (now with a Home dashboard), the menu bar panel, Meetings, Setup and About.
+- **Fix a Word from anywhere** with a global shortcut, ⌃⌥F by default.
 
-## meetings
+## Dictate
 
-press record in the menu bar, or say yes when the app asks at the start of a call. it never starts by itself. your mic is you, and whatever the mac plays is them. press stop and you get one markdown file with the speakers split out, in english by default. point your agent at the folder. settings can run a script of yours after each meeting is saved.
+Hold `fn`, talk, let go. Double-tap `fn` to talk hands-free; `esc` throws it away. A dictionary fixes words it keeps mishearing. English, or 25 languages.
 
-<p align="center">
-  <img src="apps/mac/art/demo-meeting.gif" width="760" alt="a zoom call. the app asks to record it, and after the hang-up the call becomes a markdown file. later the agent is asked what was agreed, reads the file, and quotes the line." />
-</p>
+## Meetings
 
-## install
+Press record in the menu bar, or say yes when it asks at the start of a call. It never starts by itself. Your mic is you, and whatever the Mac plays is them. Stop, and you get one Markdown file with the speakers split out.
 
-```sh
-brew install --cask jassuwu/tap/andrew-dictate
-```
+## Install
 
-apple silicon, macOS 26. i'm broke, so i didn't pay apple $99 to sign this. run this once:
+Apple silicon, macOS 26. Build it yourself:
 
 ```sh
-xattr -dr com.apple.quarantine "/Applications/Andrew Dictate.app"
-open "/Applications/Andrew Dictate.app"
+cd apps/mac
+xcodegen generate
+xcodebuild -project AndrewDictate.xcodeproj -scheme AndrewDictate -configuration Release \
+  -derivedDataPath .build-release build
+cp -R ".build-release/Build/Products/Release/Husky.app" /Applications/
 ```
 
-there's no dock icon. it lives in the menu bar as the gold badge. setup asks which jobs you want: dictation (~460 mb), and meetings (~2.9 gb) if you tick it.
+For development, `apps/mac/dev.sh` builds and runs **Husky Dev**, which has its own permissions and data.
 
-no brew? get the dmg from [releases](https://github.com/jassuwu/andrew-dictate/releases). when macOS refuses to open it, click `open anyway` in system settings › privacy & security.
+## Credits
 
-## update
+Original app: [Andrew Dictate](https://github.com/jassuwu/andrew-dictate) by [jass](https://jass.gg), MIT. Fork: [Suriya](https://github.com/suriyavasan/andrew-dictate).
 
-the menu says when there's a new version. if you installed with brew, a click on it updates the app. or:
+[FluidAudio](https://github.com/FluidInference/FluidAudio) apache-2.0 · [parakeet](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2) cc-by-4.0 · [WhisperKit](https://github.com/argmaxinc/WhisperKit) mit · [whisper](https://github.com/openai/whisper) mit · [whistle](https://huggingface.co/Cactus-Compute/whistle) apache-2.0 · [silero vad](https://github.com/snakers4/silero-vad) mit · [ThinkingOrbsKit](https://github.com/Jakubantalik/Libraries.dev) mit
 
-```sh
-brew upgrade --cask jassuwu/tap/andrew-dictate
-```
-
-to know, the app sends its version to dictate.jass.gg once a day, and nothing else. settings › general turns that off.
-
-## credits
-
-[FluidAudio](https://github.com/FluidInference/FluidAudio) apache-2.0 · [parakeet](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2) cc-by-4.0 · [WhisperKit](https://github.com/argmaxinc/WhisperKit) mit · [whisper](https://github.com/openai/whisper) mit · [whistle](https://huggingface.co/Cactus-Compute/whistle) apache-2.0 · [silero vad](https://github.com/snakers4/silero-vad) mit
-
-[mit](https://github.com/jassuwu/andrew-dictate/blob/main/LICENSE), so fork it if you want it different. made by [jass](https://jass.gg).
+[MIT](LICENSE).

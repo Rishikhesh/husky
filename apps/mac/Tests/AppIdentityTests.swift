@@ -3,16 +3,16 @@ import XCTest
 final class AppIdentityTests: XCTestCase {
     func testTheReleaseBuildKeepsTheFolderItHasAlwaysHad() {
         XCTAssertEqual(
-            AppIdentity.supportDirectoryName(for: "gg.jass.dictate"),
-            "Andrew Dictate",
+            AppIdentity.supportDirectoryName(for: "com.rishikhesh.husky"),
+            "Husky",
             "renaming this orphans every existing dictionary and archive"
         )
     }
 
     func testADevelopmentBuildGetsItsOwnFolder() {
         XCTAssertEqual(
-            AppIdentity.supportDirectoryName(for: "gg.jass.dictate.dev"),
-            "Andrew Dictate Dev"
+            AppIdentity.supportDirectoryName(for: "com.rishikhesh.husky.dev"),
+            "Husky Dev"
         )
     }
 
@@ -21,14 +21,14 @@ final class AppIdentityTests: XCTestCase {
     /// cost you a fresh empty folder, never the archive you actually use.
     func testAnythingUnrecognisedIsTreatedAsDevelopment() {
         for bundleID in [
-            "gg.jass.dictate.local",
-            "gg.jass.dictate2",
+            "com.rishikhesh.husky.local",
+            "com.rishikhesh.husky2",
             "com.example.whatever",
             "",
         ] {
             XCTAssertEqual(
                 AppIdentity.supportDirectoryName(for: bundleID),
-                "Andrew Dictate Dev",
+                "Husky Dev",
                 bundleID
             )
         }

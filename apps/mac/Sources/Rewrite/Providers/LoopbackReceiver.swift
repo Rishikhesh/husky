@@ -80,7 +80,7 @@ final class LoopbackReceiver: CallbackReceiving, @unchecked Sendable {
         } catch {
             throw LoopbackFailure.couldNotListen
         }
-        let queue = DispatchQueue(label: "gg.jass.dictate.loopback")
+        let queue = DispatchQueue(label: "com.rishikhesh.husky.loopback")
 
         let port: UInt16 = try await withCheckedThrowingContinuation { continuation in
             let once = Once()
@@ -366,17 +366,17 @@ final class LoopbackReceiver: CallbackReceiving, @unchecked Sendable {
         switch verdict {
         case let .accept(items):
             message = items.contains { $0.name == "error" } || !items.contains { $0.name == "code" }
-                ? "sign-in was cancelled. you can close this tab and go back to andrew dictate."
-                : "signed in. you can close this tab and go back to andrew dictate."
+                ? "sign-in was cancelled. you can close this tab and go back to husky."
+                : "signed in. you can close this tab and go back to husky."
         case .notFound:
             message = "nothing here."
         case .badRequest:
-            message = "this sign-in link is from another attempt. go back to andrew dictate and start again."
+            message = "this sign-in link is from another attempt. go back to husky and start again."
         }
         return """
         <!doctype html><html lang="en"><head><meta charset="utf-8">\
         <meta name="viewport" content="width=device-width,initial-scale=1">\
-        <title>andrew dictate</title><style>\
+        <title>husky</title><style>\
         body{font:17px/1.5 -apple-system,system-ui,sans-serif;max-width:30rem;\
         margin:20vh auto;padding:0 24px;color:#1d1d1f;background:#fbfaf7}\
         @media(prefers-color-scheme:dark){body{color:#f5f5f7;background:#161616}}\

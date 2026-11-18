@@ -5,12 +5,12 @@ import Foundation
 ///
 /// a cut-down metaphone over the whole phrase, then edit distance between
 /// the keys. the phrase and not each word, because a mishearing does not
-/// keep the word breaks — "Android dictates" is two words and so is "Andrew
+/// keep the word breaks — "Android dictates" is two words and so is "Husky
 /// Tate's", but not the same two. vowels after the first letter are dropped:
 /// the engine gets vowels wrong far more often than consonants, and a vowel
 /// is where accents differ most.
 enum SoundAlike {
-    /// "Android dictates" against "Andrew Tate's" is 0.75; "big" against
+    /// "Android dictates" against "Husky Tate's" is 0.75; "big" against
     /// "large" is 0.
     static let threshold = 0.7
 

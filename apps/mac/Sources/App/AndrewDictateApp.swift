@@ -84,15 +84,15 @@ struct AndrewDictateApp: App {
     /// sentence: what the meeting is doing, or the call nobody records.
     private var menuBarLabel: String {
         if coordinator.needsAttention {
-            return "Andrew Dictate — setup needed"
+            return "Husky — setup needed"
         }
         if let meeting = coordinator.meetings.phase.spoken {
-            return "Andrew Dictate — \(meeting)"
+            return "Husky — \(meeting)"
         }
         if let call = coordinator.unrecordedCall {
-            return "Andrew Dictate — call in \(call), not recording"
+            return "Husky — call in \(call), not recording"
         }
-        return "Andrew Dictate"
+        return "Husky"
     }
 
     var body: some Scene {
@@ -159,7 +159,7 @@ struct AndrewDictateApp: App {
 #if DEBUG
 /// a development build can open straight onto settings, so a pane can be
 /// looked at without a click:
-/// `open -a "Andrew Dictate Dev" --args -OpenSettingsAtLaunch YES -SettingsSectionAtLaunch home`
+/// `open -a "Husky Dev" --args -OpenSettingsAtLaunch YES -SettingsSectionAtLaunch home`
 private struct OpenSettingsAtLaunch: View {
     @Environment(\.openSettings) private var openSettings
 

@@ -46,7 +46,7 @@ struct RemovalView: View {
             .glassModule(cornerRadius: 12)
 
             Toggle(
-                "Also move Andrew Dictate to the Trash",
+                "Also move Husky to the Trash",
                 isOn: $viewModel.alsoTrashTheApp
             )
             .padding(.horizontal, 12)

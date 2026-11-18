@@ -105,7 +105,7 @@ struct WordFixerView: View {
                     .disabled(!viewModel.canSave)
             }
         } else if !viewModel.saved.isEmpty {
-            Text("Saved. Andrew will write it that way from now on, everywhere.")
+            Text("Saved. Husky will write it that way from now on, everywhere.")
                 .font(.system(size: 12))
                 .foregroundStyle(.green)
         } else {

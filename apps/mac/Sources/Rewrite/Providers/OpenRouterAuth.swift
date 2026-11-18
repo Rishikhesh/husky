@@ -10,7 +10,7 @@ struct OpenRouterAuth: Sendable {
     static let keysEndpoint = URL(string: "https://openrouter.ai/api/v1/auth/keys")!
     static let callbackPath = "/callback"
     /// the minted key's name on the user's keys page.
-    static let keyLabel = "Andrew Dictate"
+    static let keyLabel = "Husky"
 
     private let credentials: any CredentialStoring
     private let openURL: BrowserSignIn.OpenURL

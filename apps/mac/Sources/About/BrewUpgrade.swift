@@ -7,7 +7,7 @@ enum BrewUpgrade {
     /// refreshes a third-party tap before `upgrade` when the name has a
     /// tap in it (every five minutes, not every day), so the release the
     /// site just announced is one brew can see.
-    static let arguments = ["upgrade", "--cask", "jassuwu/tap/andrew-dictate"]
+    static let arguments = ["upgrade", "--cask", "rishikhesh/tap/husky"]
 
     /// absolute, never a PATH lookup: launchd's PATH has no brew on it.
     /// apple silicon's prefix first; /usr/local is a rosetta brew, which
@@ -31,7 +31,7 @@ enum BrewUpgrade {
     /// where the cask's `app` stanza puts it, so where the new version is
     /// read from once brew says it is done.
     static let installedApp = URL(
-        fileURLWithPath: "/Applications/Andrew Dictate.app",
+        fileURLWithPath: "/Applications/Husky.app",
         isDirectory: true
     )
 

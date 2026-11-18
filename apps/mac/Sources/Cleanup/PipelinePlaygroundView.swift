@@ -6,7 +6,7 @@ final class PipelinePlaygroundViewModel: ObservableObject {
     @Published private(set) var selection = PipelineSelection()
     @Published private(set) var results: [PipelineStageResult] = []
 
-    /// read live: a word you teach andrew after opening this window should
+    /// read live: a word you teach husky after opening this window should
     /// show up in the next run, not the next launch.
     private let entriesProvider: @MainActor () -> [DictionaryEntry]
 

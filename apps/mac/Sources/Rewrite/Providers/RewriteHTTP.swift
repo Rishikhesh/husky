@@ -179,7 +179,7 @@ enum RewriteHTTP {
         )
         request.httpMethod = method
         request.httpShouldHandleCookies = false
-        request.setValue("andrew-dictate", forHTTPHeaderField: "User-Agent")
+        request.setValue("husky", forHTTPHeaderField: "User-Agent")
         request.setValue("en", forHTTPHeaderField: "Accept-Language")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         return request

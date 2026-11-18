@@ -85,7 +85,7 @@ struct MeetingsWindowView: View {
     private var emptyState: some View {
         VStack(spacing: MW.s16) {
             IconTile(symbol: "waveform.badge.mic", tint: .green, size: 60)
-            Text("Record a call and Andrew writes it up, with a summary and a transcript.")
+            Text("Record a call and Husky writes it up, with a summary and a transcript.")
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

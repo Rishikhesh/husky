@@ -109,7 +109,7 @@ struct SettingsSidebarRow: View {
     }
 }
 
-/// the top of the sidebar: your orb, live, and whether Andrew is ready to
+/// the top of the sidebar: your orb, live, and whether Husky is ready to
 /// hear you, or what is stopping it.
 struct SettingsSidebarIdentity: View {
     let orb: ListeningOrb
@@ -128,7 +128,7 @@ struct SettingsSidebarIdentity: View {
             .orbFrozenTime(1.2)
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 1) {
-                Text("Andrew Dictate")
+                Text("Husky")
                     .font(.system(size: 13, weight: .semibold))
                 HStack(spacing: 5) {
                     Circle()

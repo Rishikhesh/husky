@@ -85,7 +85,7 @@ struct MeetingSummaryPane: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("No notes yet")
                             .font(.headline)
-                        Text("Andrew can write up what was decided and who owes what.")
+                        Text("Husky can write up what was decided and who owes what.")
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }

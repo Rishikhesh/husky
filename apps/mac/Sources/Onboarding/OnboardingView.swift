@@ -107,7 +107,7 @@ final class OnboardingWindowController:
         let hostingController = NSHostingController(rootView: rootView)
         let window = NSWindow(contentViewController: hostingController)
         resizer.window = window
-        window.title = "Andrew Dictate"
+        window.title = "Husky"
         // a setup assistant's window: no title, the glass running up under
         // the traffic lights.
         window.styleMask = [.titled, .closable, .fullSizeContentView]
@@ -636,11 +636,11 @@ struct OnboardingView: View {
             SetupRow(
                 symbol: "power",
                 tint: .gray,
-                title: "Start Andrew Dictate when you sign in",
+                title: "Start Husky when you sign in",
                 detail: loginItem.message?.onboardingCase
                     ?? "Otherwise it isn't running after a restart."
             ) {
-                switchControl("Start Andrew Dictate when you sign in", isOn: $launchAtLogin)
+                switchControl("Start Husky when you sign in", isOn: $launchAtLogin)
             }
         }
     }
@@ -899,7 +899,7 @@ struct OnboardingView: View {
                         .resizable()
                         .frame(width: 18, height: 18)
                         .accessibilityHidden(true)
-                    Text("This badge is Andrew, up in your menu bar.")
+                    Text("This badge is Husky, up in your menu bar.")
                         .foregroundStyle(.secondary)
                 }
                 .font(.callout)
@@ -919,7 +919,7 @@ struct OnboardingView: View {
                 symbol: "mic.fill",
                 tint: .orange,
                 status: onboarding.microphoneStatus,
-                note: "Switch the microphone on for Andrew Dictate.",
+                note: "Switch the microphone on for Husky.",
                 allow: {
                     permissions.requestMicrophoneAccess {
                         await coordinator.requestMicrophoneAccess()
@@ -936,7 +936,7 @@ struct OnboardingView: View {
                     symbol: "accessibility",
                     tint: .blue,
                     status: onboarding.accessibilityStatus,
-                    note: "Find Andrew Dictate in the list and switch it on.",
+                    note: "Find Husky in the list and switch it on.",
                     allow: permissions.requestAccessibilityPrompt,
                     openSettings: permissions.openAccessibilitySettings
                 )
@@ -1213,7 +1213,7 @@ struct OnboardingView: View {
                 // macOS explains this ask better than any line on this card
                 // can, and answering it either way is what registers the app
                 // in privacy › accessibility — so "open settings" arrives at
-                // a list andrew dictate is actually in. Inside the dictation
+                // a list husky is actually in. Inside the dictation
                 // gate: a meetings-only setup is never asked (SPEC §5).
                 permissions.requestAccessibilityPrompt()
                 coordinator.beginOnboardingEnginePreparation()
@@ -1393,8 +1393,8 @@ private extension String {
     /// spelled as macOS would.
     var onboardingCase: String {
         capitalizedFirst.replacingOccurrences(
-            of: "andrew dictate",
-            with: "Andrew Dictate",
+            of: "husky",
+            with: "Husky",
             options: .caseInsensitive
         )
     }

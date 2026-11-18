@@ -1,6 +1,6 @@
 name: AndrewDictate
 options:
-  bundleIdPrefix: gg.jass
+  bundleIdPrefix: com.rishikhesh
   deploymentTarget:
     macOS: "26.0"
   createIntermediateGroups: true
@@ -60,9 +60,9 @@ targets:
         product: ThinkingOrbsKit
     settings:
       base:
-        PRODUCT_NAME: Andrew Dictate
+        PRODUCT_NAME: Husky
         PRODUCT_MODULE_NAME: AndrewDictate
-        PRODUCT_BUNDLE_IDENTIFIER: gg.jass.dictate
+        PRODUCT_BUNDLE_IDENTIFIER: com.rishikhesh.husky
         # apple silicon only, as the spec has always said. the intel slice
         # could never run this app and was pure build cost.
         ARCHS: arm64
@@ -84,8 +84,8 @@ targets:
         # and the shipped one sit on the same mac without fighting over
         # permissions or writing to the same archive.
         Debug:
-          PRODUCT_BUNDLE_IDENTIFIER: gg.jass.dictate.dev
-          PRODUCT_NAME: Andrew Dictate Dev
+          PRODUCT_BUNDLE_IDENTIFIER: com.rishikhesh.husky.dev
+          PRODUCT_NAME: Husky Dev
           # xcode's own signing runs *after* every script phase, so it would
           # overwrite the re-sign below with a fresh ad-hoc one. off, then;
           # the script signs, with the real identity or ad hoc as a fallback.

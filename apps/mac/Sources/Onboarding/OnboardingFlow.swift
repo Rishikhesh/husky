@@ -37,7 +37,7 @@ enum OnboardingStep: Int, CaseIterable, Identifiable, Sendable {
             // introduction to the app — you already have it. It is one errand.
             jobs.scope == .meetingsOnly
                 ? "set up meeting recording"
-                : "andrew dictate"
+                : "husky"
         case .model:
             jobs.dictation && jobs.meetings
                 ? "the speech models"
@@ -109,7 +109,7 @@ enum OnboardingStep: Int, CaseIterable, Identifiable, Sendable {
         case .hello:
             let name = jobs.scope == .meetingsOnly
                 ? "set up meeting recording"
-                : "set up andrew dictate"
+                : "set up husky"
             let size = jobs.downloadSize
             return size.isEmpty ? name : "\(name) (\(size))"
         case .model:

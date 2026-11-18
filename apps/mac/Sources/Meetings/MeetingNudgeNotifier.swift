@@ -15,12 +15,12 @@ final class MeetingNudgeNotifier: NSObject, UNUserNotificationCenterDelegate {
     var onStop: (@MainActor () -> Void)?
     var onShowFile: (@MainActor (URL) -> Void)?
 
-    private static let category = "gg.jass.dictate.meeting-nudge"
+    private static let category = "com.rishikhesh.husky.meeting-nudge"
     private static let keepGoing = "keep-going"
     private static let stop = "stop"
     private static let identifier = "meeting-nudge"
 
-    private static let savedCategory = "gg.jass.dictate.meeting-saved"
+    private static let savedCategory = "com.rishikhesh.husky.meeting-saved"
     private static let showInFinder = "show-in-finder"
     /// Its own identifier: `withdraw()` pulls the nudge at every stop, and
     /// the saved banner is meant to stay until it is read.

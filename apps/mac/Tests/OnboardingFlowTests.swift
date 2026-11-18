@@ -360,25 +360,25 @@ final class OnboardingFlowTests: XCTestCase {
             OnboardingStep.hello.actionTitle(
                 for: OnboardingJobs(dictation: true, meetings: true)
             ),
-            "set up andrew dictate (~3.3 gb)"
+            "set up husky (~3.3 gb)"
         )
         XCTAssertEqual(
             OnboardingStep.hello.actionTitle(
                 for: OnboardingJobs(dictation: true, meetings: false)
             ),
-            "set up andrew dictate (~460 mb)"
+            "set up husky (~460 mb)"
         )
         XCTAssertEqual(
             OnboardingStep.hello.actionTitle(
                 for: OnboardingJobs(dictation: false, meetings: true)
             ),
-            "set up andrew dictate (~2.9 gb)"
+            "set up husky (~2.9 gb)"
         )
         XCTAssertEqual(
             OnboardingStep.hello.actionTitle(
                 for: OnboardingJobs(dictation: false, meetings: false)
             ),
-            "set up andrew dictate",
+            "set up husky",
             "nothing ticked is nothing to price"
         )
     }

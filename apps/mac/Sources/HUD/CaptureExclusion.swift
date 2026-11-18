@@ -9,7 +9,7 @@ import AppKit
 enum CaptureExclusion {
     #if DEBUG
     /// development only, compiled out of release: `defaults write
-    /// gg.jass.dictate.dev hudVisibleToCapture -bool true`, then a relaunch,
+    /// com.rishikhesh.husky.dev hudVisibleToCapture -bool true`, then a relaunch,
     /// leaves the hud and the live transcript in every capture, so a
     /// screenshot can show what they look like. read once.
     static let isSetAsideForDevelopment = UserDefaults.standard.bool(

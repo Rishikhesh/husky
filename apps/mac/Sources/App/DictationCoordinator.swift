@@ -849,7 +849,7 @@ final class DictationCoordinator: ObservableObject {
     /// Development only (`Capabilities.canResetInPlace`). Wipes this build's
     /// data and settings with no confirmation and restarts, so onboarding can
     /// be tested on the twentieth run without a trip through Finder. Against a
-    /// real archive this would be a foot-gun; against `Andrew Dictate Dev`'s
+    /// real archive this would be a foot-gun; against `Husky Dev`'s
     /// own folder it is just a fresh start.
     func resetInPlaceForDevelopment() {
         guard Capabilities.current.canResetInPlace else {
@@ -2457,7 +2457,7 @@ extension DictationCoordinator {
     /// Development only, compiled out of release like the lamp lab: a
     /// meeting a script can start and stop without the mouse, so a check of
     /// the real tap can run end to end. `notifyutil -p
-    /// gg.jass.dictate.dev.meeting.toggle` does what the menu would —
+    /// com.rishikhesh.husky.dev.meeting.toggle` does what the menu would —
     /// `record a meeting`, or `stop recording` while one runs.
     private func listenForTheMeetingToggle() {
         var token: Int32 = 0
@@ -2471,7 +2471,7 @@ extension DictationCoordinator {
     }
 
     /// Development only, beside the toggle: `notifyutil -p
-    /// gg.jass.dictate.dev.meeting.probe-sweep` during a meeting plays the
+    /// com.rishikhesh.husky.dev.meeting.probe-sweep` during a meeting plays the
     /// quiet probe at five levels and logs what the tap heard of each
     /// (measurement 02). Without a meeting it does nothing.
     private func listenForTheProbeSweep() {
@@ -2486,7 +2486,7 @@ extension DictationCoordinator {
         }
     }
 
-    /// Development only: `notifyutil -p gg.jass.dictate.dev.meeting.lose-tap`
+    /// Development only: `notifyutil -p com.rishikhesh.husky.dev.meeting.lose-tap`
     /// during a meeting takes its tap for dead and rebuilds it.
     private func listenForTheTapLoss() {
         var token: Int32 = 0
@@ -3146,7 +3146,7 @@ extension DictationCoordinator {
     /// Development only, compiled out of release like the meeting toggle:
     /// the call watcher's two suggestions and the nudge, faked, so the
     /// pill's questions can be seen and clicked without a call or an hour
-    /// of silence. `notifyutil -p gg.jass.dictate.dev.call.suggest-record`
+    /// of silence. `notifyutil -p com.rishikhesh.husky.dev.call.suggest-record`
     /// is a zoom call beginning, `….call.suggest-stop` one ending under a
     /// recording, `….meeting.nudge` the quiet hour running out.
     private func listenForTheCallChecks() {

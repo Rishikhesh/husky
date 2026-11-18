@@ -15,7 +15,7 @@ final class AboutWindowController: NSWindowController {
         let rootView = AboutView(bundle: bundle, settings: settings)
         let hostingController = NSHostingController(rootView: rootView)
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "About Andrew Dictate"
+        window.title = "About Husky"
         window.styleMask = [.titled, .closable, .fullSizeContentView]
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
@@ -102,10 +102,10 @@ struct AboutView: View {
                     .frame(width: 104, height: 104)
             }
             .buttonStyle(PressScale(reduceMotion: reduceMotion))
-            .accessibilityLabel("Andrew")
-            .accessibilityHint("Shows how many words Andrew has typed")
+            .accessibilityLabel("Husky")
+            .accessibilityHint("Shows how many words Husky has typed")
 
-            Text("Andrew Dictate")
+            Text("Husky")
                 .font(.title2.weight(.semibold))
                 .padding(.top, 8)
 
@@ -164,7 +164,7 @@ struct AboutView: View {
     }
 
     /// one slot, two lines. the tagline is the screen; the lifetime word
-    /// count is the reward for poking andrew.
+    /// count is the reward for poking husky.
     @ViewBuilder
     private var taglineOrRecord: some View {
         ZStack {
@@ -187,7 +187,7 @@ struct AboutView: View {
         let count = settings.totalWordsDictated.formatted(
             .number.grouping(.automatic)
         )
-        return "Andrew has typed \(count) words. Undefeated."
+        return "Husky has typed \(count) words. Undefeated."
     }
 
     /// what each part is licensed under, shown from the signature line.
@@ -221,9 +221,9 @@ struct AboutView: View {
     }
 
     private static let signatureSource = """
-        [Made by jass](https://jass.gg) · \
-        [Fork by Suriya](https://github.com/suriyavasan/andrew-dictate) · \
-        [Open source](https://github.com/jassuwu/andrew-dictate)
+        [Made by Rishikhesh](https://github.com/Rishikhesh/husky) · \
+        based on [Andrew Dictate by jass](https://github.com/jassuwu/andrew-dictate) \
+        and [Suriya's fork](https://github.com/suriyavasan/andrew-dictate)
         """
 
     /// who made it, whose build this is, the source, and the licences.
@@ -231,7 +231,7 @@ struct AboutView: View {
         VStack(spacing: 4) {
             Text(
                 (try? AttributedString(markdown: Self.signatureSource))
-                    ?? AttributedString("Made by jass · Fork by Suriya")
+                    ?? AttributedString("Made by Rishikhesh · based on Andrew Dictate by jass and Suriya's fork")
             )
             .multilineTextAlignment(.center)
 
@@ -300,10 +300,10 @@ struct AboutView: View {
                     Text("Version \(version) is installed.")
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
-                    Button("Restart Andrew") { AppRelaunch.now() }
+                    Button("Restart Husky") { AppRelaunch.now() }
                         .buttonStyle(.glassProminent)
                         .controlSize(.small)
-                        .help("Quits Andrew and opens it again")
+                        .help("Quits Husky and opens it again")
                 }
                 .padding(10)
                 .glassModule(cornerRadius: 12)

@@ -93,7 +93,7 @@ struct MenuBarPanel: View {
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    Text("Andrew Dictate")
+                    Text("Husky")
                         .font(.system(size: 13.5, weight: .semibold))
                     // two icons that look the same is a bad time, so the
                     // dev build says so here.
@@ -533,7 +533,7 @@ struct MenuBarPanel: View {
             MenuRow("Settings…", keys: ["⌘", ","], action: showSettings)
                 .keyboardShortcut(",")
             MenuSeparator()
-            MenuRow("About Andrew Dictate") {
+            MenuRow("About Husky") {
                 close()
                 coordinator.openAbout()
             }

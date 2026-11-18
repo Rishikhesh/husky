@@ -10,7 +10,7 @@ import ThinkingOrbsKit
 enum MenuBarBrandIcon {
     static func image(for look: BadgeLook, orb: ListeningOrb, time: Double) -> NSImage {
         let image = BadgeMarks.image(for: look, orb: glyph(orb, time: time))
-        image.accessibilityDescription = accessibilityDescription(for: look) ?? "Andrew Dictate"
+        image.accessibilityDescription = accessibilityDescription(for: look) ?? "Husky"
         return image
     }
 
@@ -44,14 +44,14 @@ enum MenuBarBrandIcon {
     ) -> String? {
         switch look {
         case .idle: nil
-        case .dictating: "Andrew Dictate recording"
-        case .callNotRecorded: "Andrew Dictate, a call is on"
+        case .dictating: "Husky recording"
+        case .callNotRecorded: "Husky, a call is on"
         // worn while a meeting gets ready and while one is written out:
         // the menu bar item's label says which.
-        case .gettingReady: "Andrew Dictate busy with a meeting"
-        case .recordingMeeting: "Andrew Dictate recording a meeting"
-        case .meetingProblem: "Andrew Dictate has a problem with the meeting"
-        case .needsSetup: "Andrew Dictate needs setup"
+        case .gettingReady: "Husky busy with a meeting"
+        case .recordingMeeting: "Husky recording a meeting"
+        case .meetingProblem: "Husky has a problem with the meeting"
+        case .needsSetup: "Husky needs setup"
         }
     }
 }

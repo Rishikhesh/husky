@@ -413,13 +413,13 @@ final class AppSettings: ObservableObject {
     private static let newestVersionSeenKey =
         "AndrewDictate.newestVersionSeen"
 
-    /// `~/andrew-dictate` — no spaces anywhere the app creates a path, so a
+    /// `~/husky` — no spaces anywhere the app creates a path, so a
     /// hook can be a one-line shell script (SPEC §11). deliberately not
     /// inside ~/Documents or ~/Desktop: those are the two folders macOS
     /// syncs to icloud on its own, and a meeting holds other people's words.
     static let defaultMeetingsFolder: URL = FileManager.default
         .homeDirectoryForCurrentUser
-        .appendingPathComponent("andrew-dictate", isDirectory: true)
+        .appendingPathComponent("husky", isDirectory: true)
 
     /// where the default used to point. an install that already wrote
     /// transcripts there keeps it — a new default must not orphan them.

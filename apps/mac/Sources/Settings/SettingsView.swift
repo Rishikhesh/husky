@@ -426,7 +426,7 @@ struct SettingsView: View {
             // the pane used to open with an unlabelled grid, so the two
             // rules it already keeps — whole words, any capitalisation —
             // were things you found out by being confused.
-            Text("When Andrew hears the word on the left, it writes the one on the right. Whole words only, and capitals don’t matter. This applies even with cleanup off.")
+            Text("When Husky hears the word on the left, it writes the one on the right. Whole words only, and capitals don’t matter. This applies even with cleanup off.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -835,7 +835,7 @@ struct SettingsView: View {
                     LabeledContent {
                         Button("Remove…") { showsRemoval = true }
                     } label: {
-                        Text("Remove Andrew Dictate")
+                        Text("Remove Husky")
                         Text("Removes what’s on this Mac, piece by piece. You choose what to keep.")
                     }
                 }
@@ -976,7 +976,7 @@ private struct DictionaryEditor: View {
                             Text("Learned")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                                .help("Andrew added this after you fixed the same word twice. Remove it and it won’t come back.")
+                                .help("Husky added this after you fixed the same word twice. Remove it and it won’t come back.")
                             // one click, and the same never-again as the
                             // menu's undo: the store remembers the pair.
                             Button {
@@ -988,7 +988,7 @@ private struct DictionaryEditor: View {
                             }
                             .buttonStyle(.plain)
                             .foregroundStyle(.secondary)
-                            .help("Remove it. Andrew won’t learn it again.")
+                            .help("Remove it. Husky won’t learn it again.")
                             .accessibilityLabel("undo learned: \(entry.right)")
                         }
                     }
@@ -1004,7 +1004,7 @@ private struct DictionaryEditor: View {
                 if store.entries.isEmpty {
                     // an unreadable file is not an empty dictionary, and
                     // must never be invited to look like one.
-                    Text((store.lastFailure ?? "teach andrew a word.").capitalizedFirst)
+                    Text((store.lastFailure ?? "teach husky a word.").capitalizedFirst)
                         .font(.caption)
                         .foregroundStyle(
                             store.lastFailure == nil
@@ -1087,7 +1087,7 @@ private struct DictionaryEditor: View {
             Text(
                 """
                 the file has \(words(pending.entries.count)). you’ve taught \
-                andrew \(words(pending.existingCount)).
+                husky \(words(pending.existingCount)).
                 """
             )
         }
@@ -1103,7 +1103,7 @@ private struct DictionaryEditor: View {
             Text("Did it get these right?")
                 .font(.headline)
 
-            Text("Words you said more than once that Andrew doesn’t know. Teach it the ones it got wrong.")
+            Text("Words you said more than once that Husky doesn’t know. Teach it the ones it got wrong.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

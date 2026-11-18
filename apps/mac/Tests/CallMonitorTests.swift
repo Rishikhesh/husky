@@ -91,7 +91,7 @@ final class CallMonitorTests: XCTestCase {
     /// suggested, and the reads slow to one every ten seconds.
     func testOurOwnMicIsNoCallAndIsReadRarely() async {
         processes = [
-            AudioProcess(pid: ours, bundleID: "gg.jass.dictate", isRunningInput: true, isRunningOutput: true)
+            AudioProcess(pid: ours, bundleID: "com.rishikhesh.husky", isRunningInput: true, isRunningOutput: true)
         ]
         let monitor = monitor()
         monitor.start()

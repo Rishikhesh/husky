@@ -16,8 +16,8 @@ enum AppIdentity {
     /// than off a `.dev` suffix, so *anything* that is not exactly the release
     /// build gets development storage. A typo in a bundle identifier should
     /// send a build to its own folder, never to the real one.
-    static let releaseBundleID = "gg.jass.dictate"
-    static let releaseSupportDirectory = "Andrew Dictate"
+    static let releaseBundleID = "com.rishikhesh.husky"
+    static let releaseSupportDirectory = "Husky"
 
     static var bundleID: String {
         Bundle.main.bundleIdentifier ?? releaseBundleID

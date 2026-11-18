@@ -21,7 +21,7 @@ enum SetupHealth {
                 SetupIssue(
                     id: "microphone",
                     title: "microphone",
-                    detail: "andrew can't hear you until macOS allows it."
+                    detail: "husky can't hear you until macOS allows it."
                 )
             )
         }

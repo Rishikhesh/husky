@@ -11,15 +11,15 @@ enum UpdateCheck {
     }
 
     static let latestReleaseURL = URL(
-        string: "https://api.github.com/repos/jassuwu/"
-            + "andrew-dictate/releases/latest"
+        string: "https://api.github.com/repos/Rishikhesh/"
+            + "husky/releases/latest"
     )!
 
     /// The one line that updates it. Every copy was installed with a brew
     /// command, so the update is a brew command — and `brew upgrade` carries
     /// the gatekeeper approval and the microphone / accessibility grants to
     /// the new version, so there is no `xattr` line to run afterwards.
-    static let upgradeCommand = "brew upgrade --cask jassuwu/tap/andrew-dictate"
+    static let upgradeCommand = "brew upgrade --cask rishikhesh/tap/husky"
 
     /// What is in /Applications *now*, which is not what this process
     /// launched with: brew replaces the bundle under a running app, and

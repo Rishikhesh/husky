@@ -85,7 +85,7 @@ final class PressLogTests: XCTestCase {
                 timeZone: kolkata
             ),
             [
-                "Andrew Dictate 0.9.4 (6)",
+                "Husky 0.9.4 (6)",
                 "macOS 27.0.1",
                 "speech model v2",
                 "default mic: MacBook Pro Microphone (built-in)",
@@ -119,7 +119,7 @@ final class PressLogTests: XCTestCase {
         XCTAssertEqual(
             PressDiagnostics.text(setup: bare, presses: [], timeZone: kolkata),
             [
-                "Andrew Dictate 0.9.4 (6)",
+                "Husky 0.9.4 (6)",
                 "macOS 27.0.1",
                 "speech model v2",
                 "default mic: none",

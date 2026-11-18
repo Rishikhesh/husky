@@ -67,7 +67,7 @@ enum ChatGPTOAuth {
     /// which is the one to keep; this one is never saved.
     static let registrationClientID = "dynamic_agent_client"
     /// what the user sees, and can rename, on openai's consent page.
-    static let agentName = "Andrew Dictate"
+    static let agentName = "Husky"
 
     /// openai matches the redirect exactly, except for the port:
     /// `/auth/callback` on 127.0.0.1, never `localhost`.
