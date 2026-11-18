@@ -167,6 +167,7 @@ private struct OpenSettingsAtLaunch: View {
         Color.clear
             .frame(width: 0, height: 0)
             .task {
+                AppIconRenderer.renderIfAsked()
                 guard UserDefaults.standard.bool(forKey: "OpenSettingsAtLaunch") else {
                     return
                 }
