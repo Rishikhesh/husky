@@ -8,8 +8,10 @@ struct WordFixerView: View {
     /// fix a word's global shortcut, for the footnote; nil when cleared.
     let shortcut: MeetingShortcut?
     let close: () -> Void
+    /// closes the window and hands focus back to the app you came from, so
+    /// the line you just copied pastes with one ⌘V.
+    let closeAndGoBack: () -> Void
 
-    @State private var lineCopied = false
     @FocusState private var fieldFocused: Bool
 
     var body: some View {
@@ -125,29 +127,25 @@ struct WordFixerView: View {
             }
             Spacer(minLength: 8)
             // "from now on" left out the one dictation you came here
-            // about. no pill and no auto-paste: focus is long gone, so the
-            // button's own label is the whole receipt.
+            // about. copying is the last step, so it also closes the window
+            // and puts you back where you were, ready for ⌘V.
             if !viewModel.saved.isEmpty {
-                Button(lineCopied ? "Copied" : "Copy the fixed line", action: copyFixedLine)
-                    .buttonStyle(.glass)
+                Button("Copy and Go Back", action: copyFixedLine)
+                    .buttonStyle(.glassProminent)
                     .controlSize(.small)
+                    .keyboardShortcut(.return, modifiers: .command)
+                    .help("Copies the fixed line, closes this window and goes back to your app (⌘↩)")
             }
         }
         .font(.system(size: 11.5))
         .foregroundStyle(.tertiary)
     }
 
-    /// the same shape and the same 1.2 s as the about window's copy button,
-    /// so the app's two transient copy buttons behave identically.
     private func copyFixedLine() {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(viewModel.fixedLine, forType: .string)
-        lineCopied = true
-        Task {
-            try? await Task.sleep(for: .seconds(1.2))
-            lineCopied = false
-        }
+        closeAndGoBack()
     }
 
     private func isSelected(_ index: Int) -> Bool {
@@ -257,12 +255,17 @@ final class WordFixerWindowController: NSWindowController {
         )
         // the view closes its window on esc; the window is made after it.
         weak var closing: NSWindow?
+        weak var controller: WordFixerWindowController?
         let window = NSWindow(
             contentViewController: NSHostingController(
                 rootView: WordFixerView(
                     viewModel: viewModel,
                     shortcut: shortcut,
-                    close: { closing?.performClose(nil) }
+                    close: { closing?.performClose(nil) },
+                    closeAndGoBack: {
+                        closing?.performClose(nil)
+                        controller?.returnToPreviousApp()
+                    }
                 )
             )
         )
@@ -274,6 +277,7 @@ final class WordFixerWindowController: NSWindowController {
         window.isReleasedWhenClosed = false
         window.center()
         super.init(window: window)
+        controller = self
     }
 
     @available(*, unavailable)
@@ -281,7 +285,23 @@ final class WordFixerWindowController: NSWindowController {
         fatalError("init(coder:) is unavailable")
     }
 
+    /// the app that was in front when this window opened: where the copied
+    /// line is going.
+    private var previousApp: NSRunningApplication?
+
+    private func returnToPreviousApp() {
+        if let previousApp, !previousApp.isTerminated {
+            previousApp.activate()
+        } else {
+            // opened from our own menu, or the app quit since: stepping
+            // back is the same as hiding, which lets macOS pick.
+            NSApp.hide(nil)
+        }
+    }
+
     func present() {
+        let front = NSWorkspace.shared.frontmostApplication
+        previousApp = front?.bundleIdentifier == Bundle.main.bundleIdentifier ? nil : front
         NSApp.activate(ignoringOtherApps: true)
         showWindow(nil)
         window?.makeKeyAndOrderFront(nil)

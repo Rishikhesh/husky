@@ -1,3 +1,7 @@
+## 0.15.3
+
+**Fix a Word gets you back to work faster.** After you save a fix, "Copy and Go Back" (or ⌘↩) copies the fixed line, closes the window and returns you to the app you were in, ready for ⌘V.
+
 ## 0.15.2
 
 Security fixes from a review of the code.
