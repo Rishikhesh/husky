@@ -1,3 +1,9 @@
+## 0.16.1
+
+**Say "slash" and get one.** "apps slash site" types `apps/site`, and "and slash or" types `and/or`. If the speech model hears "app's slash site", you still get `apps/site`. After "a" or "the" ("type a slash here") it stays a word.
+
+**The orb everywhere.** Setup's last page shows your orb, the same one in your menu bar, instead of the old gold mic. The old gold-mic artwork is gone from the app.
+
 ## 0.16.0
 
 **Updates install themselves, however you installed Husky.** When a new version is out, the menu says so. Click Update and Husky downloads it, checks it's signed by the same developer as the copy you have, and swaps it in. Then click Restart. Homebrew installs still update through Homebrew. If anything goes wrong, Husky opens the download page instead.

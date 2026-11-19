@@ -889,17 +889,17 @@ struct OnboardingView: View {
                 } else {
                     // meetings-only reaches this card too, and must never be
                     // told to hold a key it has no use for.
-                    Text("Pick “Record a Meeting” from that badge.")
+                    Text("Pick “Record a Meeting” from that orb.")
                         .font(.title3.weight(.medium))
                 }
 
                 HStack(spacing: 8) {
-                    // gold stays here: it is the brand's own mark.
-                    Image("Badge")
-                        .resizable()
+                    // the very icon the menu bar shows: your orb, at rest.
+                    Image(nsImage: MenuBarBrandIcon.image(
+                        for: .idle, orb: settings.listeningOrb, time: 0))
                         .frame(width: 18, height: 18)
                         .accessibilityHidden(true)
-                    Text("This badge is Husky, up in your menu bar.")
+                    Text("This orb is Husky, up in your menu bar.")
                         .foregroundStyle(.secondary)
                 }
                 .font(.callout)

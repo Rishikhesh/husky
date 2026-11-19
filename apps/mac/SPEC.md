@@ -103,7 +103,7 @@ working targets, not commitments: key-up → transcript ≤ 250ms, key-up → in
 
 ## 10. open questions (parked, non-blocking)
 
-- **branding — settled.** black + gold; the badge is the logo everywhere and is never a template image. the logo is a gold mic in aviators: the mic is the head (2026-10-03, ADR 0013). art lives in `art/`: two drawings, `logo.svg` and `logo-small.svg`, its cut for 32 px and under with no rim, rasterize to the icon set, the menu bar badge and the in-app badge via `build.sh`. taglines: "escape the keyboard." + "free. fast. local."
+- **branding — settled (2026-11-18).** the listening orb is the mark everywhere: the app icon is drawn by the orb engine itself (`AppIconRenderer`, debug `-RenderAppIconTo <dir>`), the menu bar and setup show your chosen orb (`MenuBarBrandIcon`). the old gold-mic art is gone.
 - **HUD placement/personality — decided (2026-08-12):** bottom-centre, the lamp. see §4.
 - ~~dictation history beyond "copy last" — deliberately absent~~ **superseded 2026-08-22 (ADR 0022).** two durable nouns: a **dictation** is your own speech and is kept until you delete it (raw + inserted text, 0600 on disk, no record of which app you were in); a **meeting recording** holds other people's words and is a separate type with its own retention rules, decided alongside meeting capture: the transcript stays until you delete it, and the audio a day by default (§11, ADR 0048). the old test — "revisit only if losing a transcript hurts" — was measured and fails: nothing is lost, because a bad dictation gets fixed in place. history exists because a tool used a hundred times a day should leave a trace, not as a safety net.
 - pre-roll buffer depth (~300ms is a starting guess) — tune once real first-word-loss data exists.

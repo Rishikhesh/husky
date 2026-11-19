@@ -115,6 +115,9 @@ struct DeterministicCleaner: Cleaner {
             EmailParser(),
             URLParser(),
             NumberParser(),
+            // after the url parser, which owns a slash that follows a
+            // domain, and after numbers, so "24 slash 7" is 24/7.
+            SpokenSlash(),
         ]
         if removeFillers {
             stages.append(FillerRemoval())
