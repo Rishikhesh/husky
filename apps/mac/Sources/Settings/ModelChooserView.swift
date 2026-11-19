@@ -52,6 +52,16 @@ struct ModelChooserView: View {
                     .controlSize(.small)
                     .padding(.top, 2)
             }
+            // loading has no percentage, and a still card reads as stuck.
+            if isChosen, !isActive, preparation == .warmingUp {
+                HStack(spacing: 6) {
+                    ProgressView().controlSize(.mini)
+                    Text("First load takes about a minute. It keeps going if you close Settings.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.top, 2)
+            }
         }
     }
 

@@ -144,6 +144,18 @@ struct MenuBarPanel: View {
         if coordinator.state != .idle {
             return (coordinator.state.displayName.capitalizedFirst, AppLook.accent)
         }
+        // a model switch runs on its own: say so wherever you look.
+        let target = settings.dictationModel
+        if target != coordinator.activeDictationModel {
+            switch coordinator.enginePreparationState {
+            case let .downloading(progress):
+                return ("Downloading \(target.shortName) · \(Int((progress * 100).rounded()))%", AppLook.accent)
+            case .warmingUp:
+                return ("Loading \(target.shortName) · about a minute", AppLook.accent)
+            case .notStarted, .ready, .failed:
+                break
+            }
+        }
         return ("Ready · hold \(settings.dictationHotkey.displayName) to talk", .green)
     }
 

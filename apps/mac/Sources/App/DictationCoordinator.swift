@@ -1330,7 +1330,10 @@ final class DictationCoordinator: ObservableObject {
 
         let currentVersion = engineSwitchState.activeVersion
         engineModelWasOnDisk = ModelStore.isOnDisk(version)
-        enginePreparationState = .downloading(progress: 0)
+        // a model already on disk only loads: no 0% bar for a download
+        // that isn't happening.
+        enginePreparationState = engineModelWasOnDisk
+            ? .warmingUp : .downloading(progress: 0)
         engineSwitchMessage = nil
         engineLogger.notice(
             "engine swap start from=\(currentVersion.rawValue) to=\(version.rawValue)"

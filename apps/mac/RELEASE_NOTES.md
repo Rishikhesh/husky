@@ -1,3 +1,9 @@
+## 0.17.1
+
+**You can see a model switch from anywhere.** While Husky downloads or loads a new speech model, the menu bar panel says so, for example "Downloading Whisper · 40%" or "Loading Parakeet v3 · about a minute". The switch keeps going if you close Settings.
+
+**Loading no longer looks stuck.** A model that's already downloaded can still take a minute to load the first time. Its card now shows a spinner and says so, instead of an empty 0% bar. In Settings, models already on your Mac are labelled "Downloaded".
+
 ## 0.17.0
 
 **A Developer style for spoken symbols.** Settings › Dictation › Cleanup › Spoken symbols. Pick Developer and "main dot swift" types `main.swift`, "dash dash force" (or "hyphen hyphen force") types `--force`, "my hyphen component" types `my-component`, "user underscore id" types `user_id`, "tilde slash projects" types `~/projects`, and "backtick npm install backtick" types `` `npm install` ``. Everyday, the default, leaves those words alone, so "a quick dash to the shop" stays as you said it.
