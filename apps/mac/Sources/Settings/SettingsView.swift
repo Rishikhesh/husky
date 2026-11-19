@@ -311,6 +311,15 @@ struct SettingsView: View {
                     isOn: $settings.removeFillersEnabled
                 )
                 .disabled(!settings.cleanupEnabled)
+                Picker(selection: $settings.speakingStyle) {
+                    ForEach(SpeakingStyle.allCases, id: \.self) { style in
+                        Text(style.title).tag(style)
+                    }
+                } label: {
+                    Text("Spoken symbols")
+                    Text(settings.speakingStyle.explanation)
+                }
+                .disabled(!settings.cleanupEnabled)
             }
 
             Section {

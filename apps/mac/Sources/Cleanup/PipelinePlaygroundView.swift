@@ -38,13 +38,15 @@ final class PipelinePlaygroundViewModel: ObservableObject {
     }
 
     /// the settings pipe mirrors the two cleaner options the same way.
-    func setOptions(fuzzyMatching: Bool, removeFillers: Bool) {
+    func setOptions(fuzzyMatching: Bool, removeFillers: Bool, style: SpeakingStyle = .everyday) {
         guard selection.fuzzyMatching != fuzzyMatching
-            || selection.removeFillers != removeFillers else {
+            || selection.removeFillers != removeFillers
+            || selection.style != style else {
             return
         }
         selection.fuzzyMatching = fuzzyMatching
         selection.removeFillers = removeFillers
+        selection.style = style
         recompute()
     }
 

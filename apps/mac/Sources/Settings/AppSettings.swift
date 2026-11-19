@@ -167,8 +167,18 @@ final class AppSettings: ObservableObject {
         CleanupOptions(
             fullCleanup: cleanupEnabled,
             fuzzyMatching: fuzzyDictionaryEnabled,
-            removeFillers: removeFillersEnabled
+            removeFillers: removeFillersEnabled,
+            style: speakingStyle
         )
+    }
+
+    @Published var speakingStyle: SpeakingStyle {
+        didSet {
+            guard speakingStyle != oldValue else {
+                return
+            }
+            userDefaults.set(speakingStyle.rawValue, forKey: Self.speakingStyleKey)
+        }
     }
 
     @Published var removeFillersEnabled: Bool {
@@ -392,6 +402,7 @@ final class AppSettings: ObservableObject {
     private static let cleanupEnabledKey = "AndrewDictate.cleanupEnabled"
     private static let fuzzyDictionaryEnabledKey =
         "AndrewDictate.fuzzyDictionaryEnabled"
+    private static let speakingStyleKey = "AndrewDictate.speakingStyle"
     private static let removeFillersEnabledKey =
         "AndrewDictate.removeFillersEnabled"
     private static let dismissedSuggestionsKey =
@@ -551,6 +562,8 @@ final class AppSettings: ObservableObject {
         removeFillersEnabled = userDefaults.object(
             forKey: Self.removeFillersEnabledKey
         ) as? Bool ?? true
+        speakingStyle = userDefaults.string(forKey: Self.speakingStyleKey)
+            .flatMap(SpeakingStyle.init(rawValue:)) ?? .everyday
 
         totalWordsDictated = max(
             0,

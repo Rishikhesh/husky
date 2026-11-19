@@ -27,6 +27,14 @@ struct Capitalization: TranscriptTransform {
                 continue
             }
 
+            // `_private`, `~/projects`, `npm`: a word that opens with one
+            // of these is code, and code keeps its case.
+            if shouldCapitalize, "_`~".contains(character) {
+                output.append(character)
+                shouldCapitalize = false
+                continue
+            }
+
             if shouldCapitalize, character.isLetter {
                 output += String(character).uppercased()
                 shouldCapitalize = false

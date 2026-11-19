@@ -40,7 +40,8 @@ enum PipelineRun {
         let cleaned = DeterministicCleaner(
             entries: entries,
             fuzzyMatching: selection.fuzzyMatching,
-            removeFillers: selection.removeFillers
+            removeFillers: selection.removeFillers,
+            style: selection.style
         ).clean(input)
         return [
             heard,

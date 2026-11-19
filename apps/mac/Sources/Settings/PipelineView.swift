@@ -82,6 +82,7 @@ struct PipelineView: View {
         }
         .onChange(of: settings.fuzzyDictionaryEnabled) { syncOptions() }
         .onChange(of: settings.removeFillersEnabled) { syncOptions() }
+        .onChange(of: settings.speakingStyle) { syncOptions() }
         .onChange(of: settings.cleanupEnabled) { _, enabled in
             run.setDeterministicEnabled(enabled)
         }
@@ -96,7 +97,8 @@ struct PipelineView: View {
     private func syncOptions() {
         run.setOptions(
             fuzzyMatching: settings.fuzzyDictionaryEnabled,
-            removeFillers: settings.removeFillersEnabled
+            removeFillers: settings.removeFillersEnabled,
+            style: settings.speakingStyle
         )
     }
 

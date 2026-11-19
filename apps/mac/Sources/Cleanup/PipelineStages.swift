@@ -64,6 +64,7 @@ struct PipelineSelection: Equatable, Sendable {
     /// the preview is the line you would get.
     var fuzzyMatching = true
     var removeFillers = true
+    var style: SpeakingStyle = .everyday
 
     func isEnabled(_ stage: PipelineStage) -> Bool {
         switch stage {
