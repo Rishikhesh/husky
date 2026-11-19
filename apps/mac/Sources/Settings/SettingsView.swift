@@ -1000,20 +1000,23 @@ private struct DictionaryEditor: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .help("Husky added this after you fixed the same word twice. Remove it and it won’t come back.")
-                            // one click, and the same never-again as the
-                            // menu's undo: the store remembers the pair.
-                            Button {
-                                selection.remove(entry.id)
-                                store.remove(id: entry.id)
-                            } label: {
-                                Image(systemName: "xmark")
-                                    .font(.caption)
-                            }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(.secondary)
-                            .help("Remove it. Husky won’t learn it again.")
-                            .accessibilityLabel("undo learned: \(entry.right)")
                         }
+                        // every row says how to remove it, on the row: a
+                        // click in a cell edits the text and never selects
+                        // the row, so a selection-driven minus could not work.
+                        Button {
+                            selection.remove(entry.id)
+                            store.remove(id: entry.id)
+                        } label: {
+                            Image(systemName: "trash")
+                                .font(.caption)
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(.secondary)
+                        .help(entry.learned
+                            ? "Remove it. Husky won’t learn it again."
+                            : "Remove this word")
+                        .accessibilityLabel("remove \(entry.wrong) → \(entry.right)")
                     }
                 }
             }
@@ -1051,19 +1054,6 @@ private struct DictionaryEditor: View {
                 .buttonStyle(.borderless)
                 .help("Add a word")
                 .accessibilityLabel("add dictionary entry")
-
-                Button {
-                    for id in selection {
-                        store.remove(id: id)
-                    }
-                    selection.removeAll()
-                } label: {
-                    Image(systemName: "minus")
-                }
-                .buttonStyle(.borderless)
-                .disabled(selection.isEmpty)
-                .accessibilityLabel("remove selected dictionary entries")
-                .help("Remove the selected words")
 
                 Spacer()
 

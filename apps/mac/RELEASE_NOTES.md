@@ -1,3 +1,7 @@
+## 0.17.2
+
+**Removing a dictionary word works.** Every word in Settings › Dictionary now has a trash button at the end of its row, after the Learned mark if it has one. Click it and the word is gone. The old minus button below the list only worked on a selected row, and clicking a word to edit it never selected the row, so it never did anything.
+
 ## 0.17.1
 
 **You can see a model switch from anywhere.** While Husky downloads or loads a new speech model, the menu bar panel says so, for example "Downloading Whisper · 40%" or "Loading Parakeet v3 · about a minute". The switch keeps going if you close Settings.

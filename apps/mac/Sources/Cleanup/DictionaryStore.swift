@@ -190,7 +190,7 @@ final class DictionaryStore: ObservableObject {
         guard save() else {
             return false
         }
-        // the menu's undo and the table's minus mean the same thing for a
+        // the menu's undo and the row's remove button mean the same thing for a
         // row the app added: you saw it and said no.
         if removed.learned {
             rememberNeverLearn(LearningKey(removed))
