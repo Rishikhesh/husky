@@ -437,6 +437,11 @@ final class MeetingCoordinatorTests: XCTestCase {
         await settle()
 
         await beQuiet(from: 5, through: 15)
+        // the rebuild is the last thing a dead tap gets; on a slow machine
+        // it lands after the last quiet chunk, so wait for it, up to 3 s.
+        for _ in 0..<300 where source.rebuilds == 0 {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
 
         XCTAssertEqual(source.quietProbes, 1)
         XCTAssertTrue(events.contains(.gapBegan), "\(events)")

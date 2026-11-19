@@ -747,7 +747,11 @@ final class MeetingTapHealthTests: XCTestCase {
         clock.advance(by: .seconds(60))
         source.skip(to: .seconds(60))
         c.probeTapIsAlive()
-        try await Task.sleep(for: .milliseconds(200))
+        // waits for the rebuild instead of a fixed 200 ms, which a slow
+        // machine (CI) sometimes outran.
+        for _ in 0..<200 where source.rebuilds == 0 {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
         XCTAssertEqual(source.rebuilds, 1)
         XCTAssertEqual(c.state, .rebuilding, "nothing heard yet")
 
