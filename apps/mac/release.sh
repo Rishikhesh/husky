@@ -62,6 +62,9 @@ rm -f "$DMG"
 hdiutil create -volname "Husky" -srcfolder "$STAGE" -ov -format UDZO "$DMG" -quiet \
   || { sleep 3; hdiutil create -volname "Husky" -srcfolder "$STAGE" -ov -format UDZO "$DMG" -quiet; }
 rm -rf "$STAGE"
+# the built app stays in the build folder; macOS must not pick it to open
+# as "Husky" in place of the installed one.
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u "$APP" || true
 SHA="$(shasum -a 256 "$DMG" | awk '{print $1}')"
 
 echo "▸ commit, tag, push"
