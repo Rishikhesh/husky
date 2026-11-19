@@ -54,7 +54,7 @@ struct MeetingModelChooserView: View {
             return "downloading"
         }
         if isDownloaded {
-            return "on this mac"
+            return "downloaded"
         }
         return isChosen
             ? "downloads at the next meeting"

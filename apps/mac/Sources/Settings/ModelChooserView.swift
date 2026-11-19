@@ -70,7 +70,7 @@ struct ModelChooserView: View {
         downloaded: Bool
     ) -> String {
         if isActive {
-            return "on this mac"
+            return "downloaded"
         }
         if isChosen {
             switch preparation {
@@ -80,6 +80,6 @@ struct ModelChooserView: View {
             case .notStarted, .ready: return "switching…"
             }
         }
-        return downloaded ? "on this mac" : "downloads when chosen"
+        return downloaded ? "downloaded" : "downloads when chosen"
     }
 }
