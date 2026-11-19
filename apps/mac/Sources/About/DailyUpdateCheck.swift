@@ -3,8 +3,8 @@ import Combine
 import Foundation
 
 /// The update check (ADR 0043): once a day, and when the menu opens on a
-/// check more than a day old, it sends the running version to
-/// dictate.jass.gg and remembers the newest version it hears. `line` is
+/// check more than a day old, it asks github for the latest release and
+/// remembers the newest version it hears. `line` is
 /// what the menu shows. It never asks while a dictation or a meeting runs,
 /// and with the switch off it never asks at all. Any failure is silence.
 @MainActor
@@ -123,7 +123,7 @@ final class DailyUpdateCheck: ObservableObject {
         }
 
         isAsking = true
-        let answer = await ask(UpdateOffer.request(version: runningVersion))
+        let answer = await ask(UpdateOffer.request())
         isAsking = false
 
         switch answer {

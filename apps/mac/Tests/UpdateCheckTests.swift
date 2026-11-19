@@ -1,4 +1,5 @@
 import AppKit
+import Security
 import XCTest
 
 final class UpdateCheckTests: XCTestCase {
@@ -180,22 +181,15 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(line?.action, .brewUpgrade)
     }
 
-    /// a dmg user handed a brew line would paste an error into terminal.
-    func testADmgInstallIsSentToTheReleasesPage() {
+    /// a dmg user has no brew, so the app downloads and installs itself.
+    func testADmgInstallDownloadsAndInstalls() {
         let line = UpdateOffer.line(
             latest: "0.9.5",
             running: "0.9.4",
             install: .dmg
         )
 
-        XCTAssertEqual(
-            line?.action,
-            .openReleasePage(
-                URL(
-                    string: "https://github.com/Rishikhesh/husky/releases/latest"
-                )!
-            )
-        )
+        XCTAssertEqual(line?.action, .downloadAndInstall)
     }
 
     func testTheInstallIsHomebrewOnlyWhenTheCaskroomHasIt() throws {
@@ -319,16 +313,16 @@ final class UpdateCheckTests: XCTestCase {
 
     // MARK: - the update check: what it sends and what it hears
 
-    /// the version, and nothing else: no id, no cookie. the two headers
+    /// nothing about this mac: no version, no id, no cookie. the two headers
     /// URLSession would fill per mac are pinned — its user agent carries
     /// the build and the darwin version, its accept-language the region
     /// (`en-IN`) — so every copy sends the same bytes but the version.
     func testTheRequestCarriesTheVersionAndNothingElse() {
-        let request = UpdateOffer.request(version: "0.9.4")
+        let request = UpdateOffer.request()
 
         XCTAssertEqual(
             request.url?.absoluteString,
-            "https://dictate.jass.gg/api/latest?version=0.9.4"
+            "https://api.github.com/repos/Rishikhesh/husky/releases/latest"
         )
         XCTAssertEqual(request.httpMethod, "GET")
         XCTAssertEqual(
@@ -343,7 +337,7 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(
             UpdateOffer.answer(
                 status: 200,
-                body: Data(#"{"latest":"0.9.5"}"#.utf8)
+                body: Data(#"{"tag_name":"v0.9.5"}"#.utf8)
             ),
             .latest("0.9.5")
         )
@@ -356,9 +350,10 @@ final class UpdateCheckTests: XCTestCase {
             UpdateOffer.answer(status: 502, body: Data(#"{"error":"x"}"#.utf8)),
             UpdateOffer.answer(status: 200, body: Data("<html>".utf8)),
             UpdateOffer.answer(status: 200, body: Data(#"{"latest":5}"#.utf8)),
+            UpdateOffer.answer(status: 200, body: Data(#"{"tag_name":"nightly"}"#.utf8)),
         ]
 
-        XCTAssertEqual(answers, [.noVersion, .noVersion, .noVersion])
+        XCTAssertEqual(answers, [.noVersion, .noVersion, .noVersion, .noVersion])
     }
 
     // MARK: - the daily check: the clock, the menu, the switch
@@ -372,7 +367,7 @@ final class UpdateCheckTests: XCTestCase {
 
         XCTAssertEqual(
             world.asked.map { $0.url?.absoluteString },
-            ["https://dictate.jass.gg/api/latest?version=0.9.4"]
+            ["https://api.github.com/repos/Rishikhesh/husky/releases/latest"]
         )
         XCTAssertEqual(world.check.line?.title, "update to 0.9.5")
         XCTAssertEqual(world.settings.updateCheckedAt, noon)
@@ -543,18 +538,15 @@ final class UpdateCheckTests: XCTestCase {
         string: "https://github.com/Rishikhesh/husky/releases/latest"
     )!
 
-    /// a dmg install opens the page the dmg is on; the line stays put.
-    func testClickingADmgLineOpensTheReleasesPage() {
-        let line = UpdateOffer.Line(
-            version: "0.9.5",
-            action: .openReleasePage(releasesPage)
-        )
+    /// a dmg line installs that version, and shows it is working on it.
+    func testClickingADmgLineInstallsThatVersion() {
+        let line = UpdateOffer.Line(version: "0.9.5", action: .downloadAndInstall)
 
         let click = UpdateOffer.click(.available(line), busy: false, brew: optBrew)
 
         XCTAssertEqual(
             click,
-            UpdateOffer.Click(state: .available(line), effect: .open(releasesPage))
+            UpdateOffer.Click(state: .updating, effect: .install(version: "0.9.5"))
         )
     }
 
@@ -1022,21 +1014,35 @@ final class UpdateCheckTests: XCTestCase {
         XCTAssertEqual(world.handOff.state(offering: nil), .restartToFinish)
     }
 
-    /// the browser opening is the confirmation; the clipboard is left
-    /// alone and the line stays as it was.
+    /// a dmg line installs in place, no brew and no browser, and then
+    /// asks for a restart.
     @MainActor
-    func testADmgLineOpensTheReleasesPage() {
+    func testADmgLineInstallsAndAsksForARestart() async {
         let world = HandOffWorld()
-        let line = UpdateOffer.Line(
-            version: "0.9.5",
-            action: .openReleasePage(releasesPage)
-        )
+        let line = UpdateOffer.Line(version: "0.9.5", action: .downloadAndInstall)
 
         let run = world.handOff.click(offering: line)
+        XCTAssertEqual(world.handOff.state(offering: line), .updating)
+        await run?.value
 
-        XCTAssertNil(run)
-        XCTAssertEqual(world.opened, [releasesPage])
+        XCTAssertEqual(world.installed, ["0.9.5"])
+        XCTAssertTrue(world.opened.isEmpty)
         XCTAssertTrue(world.runner.commands.isEmpty)
+        XCTAssertEqual(world.handOff.state(offering: line), .restartToFinish)
+    }
+
+    /// a failed install leaves the old app, opens the download page and
+    /// offers the update again.
+    @MainActor
+    func testAFailedDmgInstallOpensTheReleasesPage() async {
+        let world = HandOffWorld()
+        world.installFails = true
+        let line = UpdateOffer.Line(version: "0.9.5", action: .downloadAndInstall)
+
+        await world.handOff.click(offering: line)?.value
+
+        XCTAssertEqual(world.opened, [releasesPage])
+        XCTAssertEqual(world.logged.count, 1)
         XCTAssertNil(world.pasteboard.string(forType: .string))
         XCTAssertEqual(world.handOff.state(offering: line), .available(line))
     }
@@ -1141,6 +1147,8 @@ private final class HandOffWorld {
     private(set) var opened: [URL] = []
     private(set) var relaunches = 0
     private(set) var logged: [String] = []
+    private(set) var installed: [String] = []
+    var installFails = false
     private let pasteboardName: NSPasteboard.Name
 
     private(set) lazy var handOff: UpdateHandOff = {
@@ -1154,7 +1162,11 @@ private final class HandOffWorld {
             pasteboard: pasteboard,
             open: { [unowned self] in opened.append($0) },
             logFailure: { [unowned self] in logged.append($0) },
-            idlePoll: .milliseconds(5)
+            idlePoll: .milliseconds(5),
+            installDMG: { [unowned self] version in
+                if installFails { throw DMGUpdate.Failure(description: "no network") }
+                installed.append(version)
+            }
         )
         handOff.isBusy = { [unowned self] in busy }
         return handOff
@@ -1199,5 +1211,38 @@ extension UpdateCheckTests {
         for bad in ["file:///etc/passwd", "https://evil.example/husky", "http://github.com/Rishikhesh/husky/releases", "https://github.com/someone/else"] {
             XCTAssertEqual(UpdateCheck.trustedPage(URL(string: bad)!), UpdateOffer.releasesPage, bad)
         }
+    }
+}
+
+// MARK: - the dmg update's own checks
+
+extension UpdateCheckTests {
+    func testTheDmgComesFromTheHuskyRelease() {
+        XCTAssertEqual(
+            DMGUpdate.downloadURL(version: "0.16.0").absoluteString,
+            "https://github.com/Rishikhesh/husky/releases/download/v0.16.0/Husky-0.16.0.dmg"
+        )
+    }
+
+    /// a bundle that says another version is refused before any signature
+    /// is looked at, and an unsigned one is refused by the signature.
+    func testTheDmgUpdateRefusesAWrongVersionOrAForeignSignature() throws {
+        let app = root.appendingPathComponent("Husky.app")
+        let contents = app.appendingPathComponent("Contents")
+        try FileManager.default.createDirectory(at: contents, withIntermediateDirectories: true)
+        let plist = try PropertyListSerialization.data(
+            fromPropertyList: ["CFBundleShortVersionString": "0.16.0", "CFBundleIdentifier": "com.rishikhesh.husky"],
+            format: .xml, options: 0
+        )
+        try plist.write(to: contents.appendingPathComponent("Info.plist"))
+        var requirement: SecRequirement?
+        XCTAssertEqual(
+            SecRequirementCreateWithString(#"identifier "com.rishikhesh.husky" and anchor apple generic"# as CFString, [], &requirement),
+            errSecSuccess
+        )
+
+        XCTAssertThrowsError(try DMGUpdate.verify(app, version: "0.17.0", requirement: requirement))
+        XCTAssertThrowsError(try DMGUpdate.verify(app, version: "0.16.0", requirement: requirement))
+        XCTAssertThrowsError(try DMGUpdate.verify(app, version: "0.16.0", requirement: nil))
     }
 }

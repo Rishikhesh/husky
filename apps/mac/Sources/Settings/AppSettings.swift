@@ -331,8 +331,8 @@ final class AppSettings: ObservableObject {
         }
     }
 
-    /// the daily update check (ADR 0043): once a day the app sends its
-    /// version to dictate.jass.gg and hears back the newest. on unless
+    /// the daily update check (ADR 0043): once a day the app asks github
+    /// for the latest release. on unless
     /// switched off; off means no request at all.
     @Published var checksForUpdates: Bool {
         didSet {

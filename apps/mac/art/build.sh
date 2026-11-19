@@ -2,14 +2,12 @@
 # rasterize the brand from its two drawings, logo.svg and its small cut
 # logo-small.svg (ADR 0013): the app icon set, the menu bar badge, the in-app
 # badge and the web images via process-icon.swift, the dmg volume icon via
-# iconutil, then the og image via og-compose.swift and the four images
-# apps/site serves.
+# iconutil.
 set -euo pipefail
 cd "$(dirname "$0")"
 ICONSET=../Sources/Assets.xcassets/AppIcon.appiconset
 MENUBAR=../Sources/Assets.xcassets/MenuBarBadge.imageset
 BADGE=../Sources/Assets.xcassets/Badge.imageset
-SITE=../../site/public
 swift process-icon.swift . .
 cp icon_16.png   "$ICONSET/icon_16.png"
 cp icon_32.png   "$ICONSET/icon_16@2x.png"
@@ -42,10 +40,4 @@ cp icon_1024.png "$STAGE/icon_512x512@2x.png"
 iconutil -c icns "$STAGE" -o AndrewDictate.icns
 rm -rf "$TMP"
 
-swift og-compose.swift
-cp og.png        "$SITE/og.png"
-cp badge_1024.png "$SITE/badge.png"
-cp favicon_256.png "$SITE/favicon.png"
-# a png under the old name, for whatever asks for /favicon.ico unprompted
-cp favicon_32.png  "$SITE/favicon.ico"
 echo "built"

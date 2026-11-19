@@ -71,7 +71,7 @@ struct OpenAICompatibleClient: RewriteClient {
             return []
         }
         return [
-            ("HTTP-Referer", "https://dictate.jass.gg"),
+            ("HTTP-Referer", "https://github.com/Rishikhesh/husky"),
             ("X-Title", "Husky"),
         ]
     }

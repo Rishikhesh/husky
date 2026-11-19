@@ -824,7 +824,7 @@ struct SettingsView: View {
                 // the row says exactly what goes out.
                 Toggle(isOn: $settings.checksForUpdates) {
                     Text("Check for updates")
-                    Text("Once a day, sends the version you’re running to dictate.jass.gg and nothing else. A newer one shows up as a line in the menu.")
+                    Text("Once a day, asks GitHub for Husky’s latest release. Nothing about you or this Mac is sent. A newer one shows up in the menu, and one click installs it.")
                 }
                 .toggleStyle(.switch)
             }

@@ -9,8 +9,9 @@ private let updateLogger = Logger(
 /// How the update line's click is carried out. `UpdateOffer` says what a
 /// click does to the line; this does it, and remembers where the line has
 /// got to. a brew install runs `brew upgrade` in the background and the
-/// line follows it to `restart to finish`. a dmg install gets the releases
-/// page in the browser, which is its own confirmation.
+/// line follows it to `restart to finish`. a dmg install downloads the
+/// dmg and swaps the app itself (`DMGUpdate`), and on any failure opens the
+/// releases page so the user can do it by hand.
 @MainActor
 final class UpdateHandOff: ObservableObject {
     /// nil until a click moves the line. after that the click's outcome is
@@ -31,6 +32,7 @@ final class UpdateHandOff: ObservableObject {
     private let open: (URL) -> Void
     private let logFailure: (String) -> Void
     private let idlePoll: Duration
+    private let installDMG: @MainActor (String) async throws -> Void
 
     init(
         runningVersion: String,
@@ -44,7 +46,8 @@ final class UpdateHandOff: ObservableObject {
         logFailure: @escaping (String) -> Void = {
             updateLogger.error("\($0, privacy: .public)")
         },
-        idlePoll: Duration = .seconds(1)
+        idlePoll: Duration = .seconds(1),
+        installDMG: @escaping @MainActor (String) async throws -> Void = { try await DMGUpdate.install(version: $0) }
     ) {
         self.runningVersion = runningVersion
         self.onDiskVersion = onDiskVersion
@@ -56,6 +59,7 @@ final class UpdateHandOff: ObservableObject {
         self.open = open
         self.logFailure = logFailure
         self.idlePoll = idlePoll
+        self.installDMG = installDMG
     }
 
     /// the shipped app's hand-off: this bundle's version, and the bundle
@@ -100,6 +104,10 @@ final class UpdateHandOff: ObservableObject {
             return Task {
                 await upgrade(with: brew)
             }
+        case let .install(version):
+            return Task {
+                await install(version)
+            }
         case let .open(page):
             open(page)
         case .relaunch:
@@ -132,6 +140,19 @@ final class UpdateHandOff: ObservableObject {
             copy(UpdateCheck.upgradeCommand)
         }
         progress = finished
+    }
+
+    /// a failed install leaves the old app where it was, so the line goes
+    /// back to offering the update and the browser gets the page.
+    private func install(_ version: String) async {
+        do {
+            try await installDMG(version)
+            progress = .restartToFinish
+        } catch {
+            logFailure("dmg update to \(version) failed: \(error)")
+            open(UpdateOffer.releasesPage)
+            progress = nil
+        }
     }
 
     /// one line for the log: how brew ended, then what brew said last.

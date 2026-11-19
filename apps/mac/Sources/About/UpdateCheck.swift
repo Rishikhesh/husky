@@ -1,9 +1,8 @@
 import Foundation
 
 /// The about window's question, asked only when the user clicks: is there
-/// a newer release? It asks github directly. The automatic once-a-day check
-/// is `DailyUpdateCheck`, which asks dictate.jass.gg and never github; the
-/// version parsing here serves both.
+/// a newer release? It asks github directly, as does the automatic
+/// once-a-day check, `DailyUpdateCheck`; the version parsing here serves both.
 enum UpdateCheck {
     struct Latest: Equatable, Sendable {
         let version: String

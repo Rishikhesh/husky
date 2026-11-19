@@ -37,7 +37,8 @@ enum UpdateOffer {
     /// when it fails.
     enum Action: Equatable, Sendable {
         case brewUpgrade
-        case openReleasePage(URL)
+        /// download the release's dmg and swap it in (`DMGUpdate`).
+        case downloadAndInstall
     }
 
     static let releasesPage = URL(
@@ -54,20 +55,19 @@ enum UpdateOffer {
         }
     }
 
-    /// a dmg user handed a `brew upgrade` line would paste an error into
-    /// their terminal, so they get the page the dmg is on instead.
+    /// brew put it there, brew replaces it; a dragged-in app replaces
+    /// itself, since a dmg user has no brew to hand the job to.
     static func action(for install: Install) -> Action {
         switch install {
         case .homebrew:
             .brewUpgrade
         case .dmg:
-            .openReleasePage(releasesPage)
+            .downloadAndInstall
         }
     }
 
-    /// the site's answer, never github's: the automatic check has no
-    /// fallback (apps/site/api/latest.ts).
-    static let endpoint = URL(string: "https://dictate.jass.gg/api/latest")!
+    /// github's latest release: the same answer the About window gets.
+    static let endpoint = UpdateCheck.latestReleaseURL
 
     /// what the site said. `unreachable` — offline, a timeout, dns — is
     /// not an answer, so it is not today's check either: the next tick
@@ -78,18 +78,13 @@ enum UpdateOffer {
         case unreachable
     }
 
-    /// the running version as one query item, and nothing else. two headers
-    /// are pinned rather than left to URLSession, whose defaults differ per
-    /// mac: the user agent carries the build and the darwin version, and
+    /// nothing about this mac: no version, no id. two headers are pinned
+    /// rather than left to URLSession, whose defaults differ per mac: the
+    /// user agent carries the build and the darwin version, and
     /// accept-language carries the region (`en-IN`).
-    static func request(version: String) -> URLRequest {
-        var components = URLComponents(
-            url: endpoint,
-            resolvingAgainstBaseURL: false
-        )!
-        components.queryItems = [URLQueryItem(name: "version", value: version)]
+    static func request() -> URLRequest {
         var request = URLRequest(
-            url: components.url!,
+            url: endpoint,
             cachePolicy: .reloadIgnoringLocalCacheData,
             timeoutInterval: 15
         )
@@ -102,15 +97,23 @@ enum UpdateOffer {
 
     static func answer(status: Int, body: Data) -> Answer {
         struct Body: Decodable {
-            let latest: String
+            let tagName: String
+
+            enum CodingKeys: String, CodingKey {
+                case tagName = "tag_name"
+            }
         }
 
         guard status == 200,
-              let decoded = try? JSONDecoder().decode(Body.self, from: body)
+              let decoded = try? JSONDecoder().decode(Body.self, from: body),
+              !UpdateCheck.numbers(in: decoded.tagName).isEmpty
         else {
             return .noVersion
         }
-        return .latest(decoded.latest)
+        let version = UpdateCheck.numbers(in: decoded.tagName)
+            .map(String.init)
+            .joined(separator: ".")
+        return .latest(version)
     }
 
     static let checkInterval: TimeInterval = 24 * 60 * 60
@@ -197,6 +200,8 @@ enum UpdateOffer {
     enum Effect: Equatable, Sendable {
         /// `brew upgrade` with the brew at this path.
         case upgrade(brew: URL)
+        /// download this version's dmg and swap it in.
+        case install(version: String)
         case open(URL)
         /// quit and come back as whatever brew put in /Applications.
         case relaunch
@@ -244,8 +249,8 @@ enum UpdateOffer {
                 return Click(state: state, effect: .open(releasesPage))
             }
             return Click(state: .updating, effect: .upgrade(brew: brew))
-        case let .openReleasePage(page):
-            return Click(state: state, effect: .open(page))
+        case .downloadAndInstall:
+            return Click(state: .updating, effect: .install(version: line.version))
         }
     }
 

@@ -164,6 +164,7 @@ targets:
       - Sources/About/UpdateHandOff.swift
       - Sources/About/CommandRunner.swift
       - Sources/About/BrewUpgrade.swift
+      - Sources/About/DMGUpdate.swift
       - path: Sources/Meetings
         excludes:
           - LiveTranscriptView.swift

@@ -106,7 +106,7 @@ final class RewriteOpenAICompatibleTests: XCTestCase {
 
         XCTAssertEqual(
             openRouter?.value(forHTTPHeaderField: "HTTP-Referer"),
-            "https://dictate.jass.gg"
+            "https://github.com/Rishikhesh/husky"
         )
         XCTAssertEqual(openRouter?.value(forHTTPHeaderField: "X-Title"), "Husky")
         XCTAssertNil(openAI?.value(forHTTPHeaderField: "HTTP-Referer"))
