@@ -177,7 +177,7 @@ enum SpeakingStyle: String, CaseIterable, Sendable {
         case .everyday:
             "Say “slash” for /. Dash, dot and the rest stay words."
         case .developer:
-            "Also “dot”, “dash”, “underscore”, “tilde” and “backtick”: main dot swift → main.swift, dash dash force → --force, user underscore id → user_id."
+            "Also “dot”, “dash” or “hyphen”, “underscore”, “tilde” and “backtick”: main dot swift → main.swift, dash dash force → --force, user underscore id → user_id."
         }
     }
 }

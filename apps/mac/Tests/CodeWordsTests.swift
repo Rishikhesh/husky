@@ -56,3 +56,12 @@ extension CodeWordsTests {
         XCTAssertEqual(dev("backtick npm install backtick works"), "`npm install` works.")
     }
 }
+
+extension CodeWordsTests {
+    /// "-" is said both ways, and mixed.
+    func testHyphenIsADashToo() {
+        XCTAssertEqual(dev("make my hyphen component"), "Make my-component.")
+        XCTAssertEqual(dev("git push hyphen hyphen force"), "Git push --force.")
+        XCTAssertEqual(dev("git push dash hyphen force"), "Git push --force.")
+    }
+}

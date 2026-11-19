@@ -1,6 +1,6 @@
 ## 0.17.0
 
-**A Developer style for spoken symbols.** Settings › Dictation › Cleanup › Spoken symbols. Pick Developer and "main dot swift" types `main.swift`, "dash dash force" types `--force`, "user underscore id" types `user_id`, "tilde slash projects" types `~/projects`, and "backtick npm install backtick" types `` `npm install` ``. Everyday, the default, leaves those words alone, so "a quick dash to the shop" stays as you said it.
+**A Developer style for spoken symbols.** Settings › Dictation › Cleanup › Spoken symbols. Pick Developer and "main dot swift" types `main.swift`, "dash dash force" (or "hyphen hyphen force") types `--force`, "my hyphen component" types `my-component`, "user underscore id" types `user_id`, "tilde slash projects" types `~/projects`, and "backtick npm install backtick" types `` `npm install` ``. Everyday, the default, leaves those words alone, so "a quick dash to the shop" stays as you said it.
 
 **Say "slash" and get one.** "apps slash site" types `apps/site`, and "and slash or" types `and/or`. If the speech model hears "app's slash site", you still get `apps/site`. After "a" or "the" ("type a slash here") it stays a word.
 
